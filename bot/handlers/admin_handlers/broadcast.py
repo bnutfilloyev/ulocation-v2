@@ -9,6 +9,7 @@ from aiogram.filters import Command
 
 broadcast_router = Router()
 
+
 @broadcast_router.message(Command("broadcast"))
 async def broadcast_command(message: types.Message, state: FSMContext):
     """Admin uchun xabar jo‘natish."""
@@ -16,10 +17,7 @@ async def broadcast_command(message: types.Message, state: FSMContext):
     user_update = await db.user_update(user_id=message.from_user.id)
 
     if not user_update.get("is_admin"):
-        text = (
-            "🚫 <b>Ruxsat berilmadi!</b>\n\n"
-            "❌ Siz admin emassiz."
-        )
+        text = "🚫 <b>Ruxsat berilmadi!</b>\n\n" "❌ Siz admin emassiz."
         await message.answer(text=text, parse_mode="HTML")
         return await state.clear()
 

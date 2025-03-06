@@ -16,14 +16,16 @@ async def input_firstname(message: types.Message, state: FSMContext):
     text = (
         "📞 <b>Telefon raqamingizni kiriting!</b>\n\n"
         "🔹 <b>Qo‘lda yozish shart emas!</b>\n"
-        "📲 <b>\"Raqamni yuborish\"</b> tugmasini bosing va avtomatik ravishda ma’lumotlaringizni jo‘nating."
+        '📲 <b>"Raqamni yuborish"</b> tugmasini bosing va avtomatik ravishda ma’lumotlaringizni jo‘nating.'
     )
 
     await message.answer(text=text, reply_markup=contact_kb(), parse_mode="HTML")
     await state.set_state(RegState.phone_number)
 
 
-@register_router.message(RegState.phone_number, ~F.text.startswith("/") | F.text | F.contact)
+@register_router.message(
+    RegState.phone_number, ~F.text.startswith("/") | F.text | F.contact
+)
 async def input_phone(message: types.Message, state: FSMContext):
     """Telefon raqamini qabul qilish"""
     if message.contact:
@@ -31,7 +33,10 @@ async def input_phone(message: types.Message, state: FSMContext):
     elif message.text:
         phone = message.text
     else:
-        return await message.answer("❌ <b>Noto‘g‘ri format!</b> Iltimos, telefon raqamingizni to‘g‘ri kiriting.", parse_mode="HTML")
+        return await message.answer(
+            "❌ <b>Noto‘g‘ri format!</b> Iltimos, telefon raqamingizni to‘g‘ri kiriting.",
+            parse_mode="HTML",
+        )
 
     await state.update_data(input_phone=phone)
 

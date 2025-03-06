@@ -28,7 +28,7 @@ class MongoDB:
         if user_info is None:
             await self.db.users.insert_one({"user_id": user_id})
             return await self.user_update(user_id, data)
-        
+
         if data:
             await self.db.users.update_one(
                 {"user_id": user_id}, {"$set": data}, upsert=True
@@ -39,7 +39,6 @@ class MongoDB:
     async def users_list(self):
         return await self.db.users.find().to_list(length=None)
 
-
     # --- Partner bilan bog'liq funksiyalar ---
     async def get_partner(self, login: str):
         return await self.db.partners.find_one({"partner_login": login})
@@ -49,7 +48,6 @@ class MongoDB:
 
     async def check_partner_credentials(self, login: str, password: str):
         partner = await self.get_partner(login)
-        print(partner)
         if partner and partner.get("partner_password") == password:
             return partner
         return None
@@ -60,10 +58,16 @@ class MongoDB:
             return False
         result = await self.db.partners.insert_one(partner_data)
         return result.inserted_id is not None
-    
 
     # --- Aksiyalar bilan bog'liq funksiyalar ---
-    async def add_promotion(self, partner_id: str, name: str, description: str, category: str, image: str = None):
+    async def add_promotion(
+        self,
+        partner_id: str,
+        name: str,
+        description: str,
+        category: str,
+        image: str = None,
+    ):
         new_promo = {
             "partner_id": ObjectId(partner_id),
             "name": name,
@@ -71,44 +75,43 @@ class MongoDB:
             "category": category,
             "image": image,  # Aksiya uchun rasm (ixtiyoriy)
             "created_at": datetime.now(),
-            "is_active": True  # Aksiya faolligini belgilash
+            "is_active": True,  # Aksiya faolligini belgilash
         }
         result = await self.db.promotions.insert_one(new_promo)
         return result.inserted_id if result.acknowledged else None
-    
+
     async def finish_promotion(self, promotion_id: str):
         result = await self.db.promotions.update_one(
-            {"_id": ObjectId(promotion_id)},
-            {"$set": {"is_active": False}}
+            {"_id": ObjectId(promotion_id)}, {"$set": {"is_active": False}}
         )
         return result.modified_count > 0  # True yoki False qaytaradi
-    
+
     async def get_active_promotions(self, partner_id: str = None):
         if partner_id is None:
-            return await self.db.promotions.find({"is_active": True}).to_list(length=None)
-        
-        return await self.db.promotions.find({
-            "partner_id": ObjectId(partner_id),
-            "is_active": True
-        }).to_list(length=None)
-    
+            return await self.db.promotions.find({"is_active": True}).to_list(
+                length=None
+            )
+
+        return await self.db.promotions.find(
+            {"partner_id": ObjectId(partner_id), "is_active": True}
+        ).to_list(length=None)
+
     async def get_promotion(self, promotion_id: str):
-        promotion_info = await self.db.promotions.find_one({"_id": ObjectId(promotion_id)})
+        promotion_info = await self.db.promotions.find_one(
+            {"_id": ObjectId(promotion_id)}
+        )
         return promotion_info
 
     async def generate_user_promo_code(self, user_id: str, promotion_id: str):
-        """
-        Agar foydalanuvchi oldin ushbu aksiya uchun promo kod olmagan bo‘lsa, yangi promo kod yaratadi.
-        Aks holda, mavjud promo kodni qaytaradi.
-        """
-        existing_promo = await self.db.user_promo_codes.find_one({
-            "user_id": user_id,
-            "promotion_id": ObjectId(promotion_id),
-            "used": False
-        })
+        existing_promo = await self.db.user_promo_codes.find_one(
+            {"user_id": user_id, "promotion_id": ObjectId(promotion_id)}
+        )
 
         if existing_promo:
-            return existing_promo["code"]  # Eski kodni qaytaramiz
+            if existing_promo.get("used"):
+                return None
+            
+            return existing_promo["code"]
 
         new_code = self.generate_promo_code()
         promo_entry = {
@@ -116,7 +119,7 @@ class MongoDB:
             "promotion_id": ObjectId(promotion_id),
             "code": new_code,
             "generated_at": datetime.now(),
-            "used": False
+            "used": False,
         }
         await self.db.user_promo_codes.insert_one(promo_entry)
         return new_code
@@ -125,28 +128,35 @@ class MongoDB:
         """
         Foydalanuvchi uchun ushbu aksiya bo‘yicha promo kodni olish.
         """
-        return await self.db.user_promo_codes.find_one({
-            "user_id": user_id,
-            "promotion_id": ObjectId(promotion_id)
-        })
+        return await self.db.user_promo_codes.find_one(
+            {"user_id": user_id, "promotion_id": ObjectId(promotion_id)}
+        )
 
     async def mark_promo_code_as_used(self, promo_code: str):
         """
         Promo kodni ishlatilgan deb belgilash.
         """
         result = await self.db.user_promo_codes.update_one(
-            {"code": promo_code},
-            {"$set": {"used": True, "used_at": datetime.now()}}
+            {"code": promo_code}, {"$set": {"used": True, "used_at": datetime.now()}}
         )
         return result.modified_count > 0
     
+    async def check_promo_code(self, promo_code: str):
+        result = await self.db.user_promo_codes.find_one({"code": promo_code})
+        
+        if result:
+            promotion_id = result["promotion_id"]
+            promotion = await self.get_promotion(promotion_id)
+            result["promotion"] = promotion
+
+        return result
 
     def generate_promo_code(self, length=8):
         """
         Tasodifiy alfanumerik promo kod yaratish.
         """
         letters_and_digits = string.ascii_uppercase + string.digits
-        return ''.join(random.choices(letters_and_digits, k=length))
+        return "".join(random.choices(letters_and_digits, k=length))
     
 
 

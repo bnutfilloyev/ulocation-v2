@@ -1,15 +1,21 @@
 from aiogram.filters.callback_data import CallbackData
 from aiogram.types import (
-    InlineKeyboardButton,
     KeyboardButton,
     ReplyKeyboardMarkup,
     ReplyKeyboardRemove,
 )
-from aiogram.utils.keyboard import InlineKeyboardBuilder, ReplyKeyboardBuilder
+from aiogram.utils.keyboard import InlineKeyboardBuilder
 
 
 def remove_kb():
     return ReplyKeyboardRemove()
+
+
+skip_kb = ReplyKeyboardMarkup(
+    keyboard=[[KeyboardButton(text="🚫 O'tkazib yuborish")]],
+    resize_keyboard=True,
+    input_field_placeholder="Agar rasmsiz davom ettirmoqchi bo'lsangiz, tugmani bosing",
+)
 
 
 def contact_kb():
@@ -67,20 +73,41 @@ async def get_partner_kb(partners: list):
     return builder.as_markup()
 
 
-
-class PartnerMenuCD(CallbackData, prefix="partner"):
+class PartnerMenuCD(CallbackData, prefix="partnermenu"):
     action: str
     partner_id: str
+
 
 async def partner_menu_kb(partner_id: str):
     builder = InlineKeyboardBuilder()
     partner_id = str(partner_id)
-    builder.button(text="Aksiya qo'shish", callback_data=PartnerMenuCD(action="add_promotion", partner_id=partner_id).pack())
-    builder.button(text="Aksiyani tugatish", callback_data=PartnerMenuCD(action="finish_promotion", partner_id=partner_id).pack())
-    builder.button(text="Hisobotlar", callback_data=PartnerMenuCD(action="reports", partner_id=partner_id).pack())
-    builder.button(text="Promokodni tekshirish", callback_data=PartnerMenuCD(action="check_promo_code", partner_id=partner_id).pack())
+    
+    builder.button(
+        text="➕ Aksiya qo‘shish",
+        callback_data=PartnerMenuCD(
+            action="add_promotion", partner_id=partner_id
+        ).pack(),
+    )
+    builder.button(
+        text="❌ Aksiyani tugatish",
+        callback_data=PartnerMenuCD(
+            action="finish_promotion", partner_id=partner_id
+        ).pack(),
+    )
+    builder.button(
+        text="📊 Hisobotlar",
+        callback_data=PartnerMenuCD(action="reports", partner_id=partner_id).pack(),
+    )
+    builder.button(
+        text="🔍 Promokodni tekshirish",
+        callback_data=PartnerMenuCD(
+            action="check_promo_code", partner_id=partner_id
+        ).pack(),
+    )
+    
     builder.adjust(1)
     return builder.as_markup()
+
 
 class PartnerPromotionCD(CallbackData, prefix="partner_promotion"):
     promotion_id: str
@@ -92,6 +119,5 @@ async def get_partner_promotions_kb(promotions: list):
         button_text = promo.get("name")
         callback_data = PartnerPromotionCD(promotion_id=str(promo.get("_id"))).pack()
         builder.button(text=button_text, callback_data=callback_data)
-    
-    
+
     return builder.adjust(1).as_markup()

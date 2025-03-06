@@ -9,17 +9,21 @@ from aiogram.fsm.context import FSMContext
 
 invoices_router = Router()
 
-@invoices_router.pre_checkout_query(RegState.subscription, F.invoice_payload == "subscription")
+
+@invoices_router.pre_checkout_query(
+    RegState.subscription, F.invoice_payload == "subscription"
+)
 async def pre_checkout_query(query: PreCheckoutQuery) -> None:
     """To‘lovni tasdiqlash"""
     await query.answer(ok=True)
+
 
 @invoices_router.message(RegState.subscription, F.successful_payment)
 async def successful_payment(message: Message, state: FSMContext) -> None:
     """To‘lov muvaffaqiyatli amalga oshirilgandan keyin obunani yangilash"""
     now = datetime.now()
     user = await db.user_update(user_id=message.from_user.id)
-    
+
     if user.get("expiry_date") and user["expiry_date"] > now:
         new_expiry = user["expiry_date"] + relativedelta(months=1)
     else:
@@ -34,9 +38,9 @@ async def successful_payment(message: Message, state: FSMContext) -> None:
         "payment_id": message.successful_payment.invoice_payload,
         "payment_date": now,
         "amount": payment_amount,
-        "currency": currency
+        "currency": currency,
     }
-    
+
     invoice_data = {
         **state_data,
         "is_subscribed": True,
@@ -45,17 +49,16 @@ async def successful_payment(message: Message, state: FSMContext) -> None:
         "expiry_date": new_expiry,
         "payment_amount": payment_amount,
         "currency": currency,
-        "payments": user.get("payments", []) + [payment_log]
+        "payments": user.get("payments", []) + [payment_log],
     }
-    
+
     await db.user_update(user_id=message.from_user.id, data=invoice_data)
-    
+
     await message.answer(
         f"🎉 <b>To'lov muvaffaqiyatli amalga oshirildi!</b>\n\n"
         f"📅 <b>Obunangiz</b> <code>{new_expiry.strftime('%d-%m-%Y')}</code> gacha amal qiladi.\n\n"
         "✅ Endi botimizning barcha imkoniyatlaridan bemalol foydalanishingiz mumkin!\n\n"
         "🔽 Quyidagi tugmalardan birini tanlang:",
         reply_markup=main_menu_kb(),
-        parse_mode="HTML"
+        parse_mode="HTML",
     )
-    

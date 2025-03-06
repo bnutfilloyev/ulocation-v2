@@ -1,4 +1,5 @@
 """This file represent startup bot logic."""
+
 import asyncio
 import logging
 import sys
@@ -32,7 +33,7 @@ def get_dispatcher(
 
 async def start_bot():
     """This function will start bot with polling mode."""
-    bot = Bot(token=conf.bot.token, default=DefaultBotProperties(parse_mode='HTML'))
+    bot = Bot(token=conf.bot.token, default=DefaultBotProperties(parse_mode="HTML"))
     await on_startup(bot)
     dp = get_dispatcher()
 

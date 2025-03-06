@@ -9,7 +9,7 @@ class RegState(StatesGroup):
 
 class BroadcastState(StatesGroup):
     broadcast = State()
-    
+
 
 class PartnerAddState(StatesGroup):
     waiting_for_partner_name = State()
@@ -20,6 +20,7 @@ class PartnerAddState(StatesGroup):
 class PartnerAuthState(StatesGroup):
     waiting_for_partner_login = State()
     waiting_for_partner_password = State()
+    waiting_for_promo_code = State()
 
 
 class AddPromotionState(StatesGroup):
@@ -27,4 +28,3 @@ class AddPromotionState(StatesGroup):
     waiting_for_promotion_description = State()
     waiting_for_promotion_image = State()
     waiting_for_promotion_category = State()
-    

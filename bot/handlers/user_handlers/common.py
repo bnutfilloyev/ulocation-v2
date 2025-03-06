@@ -34,7 +34,7 @@ async def start_command(
         text = (
             "📞 <b>Telefon raqamingizni kiriting!</b>\n\n"
             "🔹 <b>Qo‘lda yozish shart emas!</b>\n"
-            "📲 <b>\"Raqamni yuborish\"</b> tugmasini bosing va avtomatik ravishda ma’lumotlaringizni jo‘nating."
+            '📲 <b>"Raqamni yuborish"</b> tugmasini bosing va avtomatik ravishda ma’lumotlaringizni jo‘nating.'
         )
         await message.answer(text=text, reply_markup=contact_kb(), parse_mode="HTML")
         return await state.set_state(RegState.phone_number)
