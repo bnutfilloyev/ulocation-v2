@@ -23,9 +23,7 @@ async def input_firstname(message: types.Message, state: FSMContext):
     await state.set_state(RegState.phone_number)
 
 
-@register_router.message(
-    RegState.phone_number, ~F.text.startswith("/") | F.text | F.contact
-)
+@register_router.message(RegState.phone_number, ~F.text.startswith("/") | F.text | F.contact)
 async def input_phone(message: types.Message, state: FSMContext):
     """Telefon raqamini qabul qilish"""
     if message.contact:

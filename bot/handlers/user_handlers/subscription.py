@@ -58,3 +58,4 @@ async def successful_payment(message: Message, state: FSMContext) -> None:
         reply_markup=main_menu_kb(),
         parse_mode="HTML"
     )
+    

@@ -76,15 +76,3 @@ async def help_command(message: types.Message, state: FSMContext):
     )
     await message.answer(text=text, reply_markup=main_menu_kb(), parse_mode="HTML")
     return await state.clear()
-
-
-@start_router.message(Command("broadcast"))
-async def broadcast_command(message: types.Message, state: FSMContext):
-    """Admin uchun xabar jo‘natish."""
-    text = (
-        "📢 <b>Yangi xabar jo‘natish</b>\n\n"
-        "🔹 Jo‘natmoqchi bo‘lgan xabaringizni kiriting.\n"
-        "📌 Xabar barcha foydalanuvchilarga yuboriladi!"
-    )
-    await message.answer(text=text, parse_mode="HTML")
-    return await state.set_state(BroadcastState.broadcast)

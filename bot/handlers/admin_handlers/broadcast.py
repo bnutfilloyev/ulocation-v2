@@ -4,8 +4,32 @@ from structures.database import db
 from structures.broadcaster import copy_message
 from aiogram.fsm.context import FSMContext
 
+from aiogram.filters import Command
+
 
 broadcast_router = Router()
+
+@broadcast_router.message(Command("broadcast"))
+async def broadcast_command(message: types.Message, state: FSMContext):
+    """Admin uchun xabar jo‘natish."""
+
+    user_update = await db.user_update(user_id=message.from_user.id)
+
+    if not user_update.get("is_admin"):
+        text = (
+            "🚫 <b>Ruxsat berilmadi!</b>\n\n"
+            "❌ Siz admin emassiz."
+        )
+        await message.answer(text=text, parse_mode="HTML")
+        return await state.clear()
+
+    text = (
+        "📢 <b>Yangi xabar jo‘natish</b>\n\n"
+        "🔹 Jo‘natmoqchi bo‘lgan xabaringizni kiriting.\n"
+        "📌 Xabar barcha foydalanuvchilarga yuboriladi!"
+    )
+    await message.answer(text=text, parse_mode="HTML")
+    return await state.set_state(BroadcastState.broadcast)
 
 
 @broadcast_router.message(BroadcastState.broadcast)
