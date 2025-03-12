@@ -1,12 +1,9 @@
 from aiogram import F, Router, types
 from aiogram.filters import Command, CommandObject
 from aiogram.fsm.context import FSMContext
-from keyboards.common_kb import (
-    PartnerCD,
-    admin_menus_kb,
-    admin_partner_menus_kb,
-    get_partner_kb,
-)
+
+from keyboards.admin_kb import admin_menus_kb, admin_partner_menus_kb
+from keyboards.partner_kb import PartnerCD, get_partner_kb
 from structures.database import db
 from structures.states import PartnerAddState
 
@@ -24,13 +21,11 @@ async def access_by_userid(message: types.Message, command: CommandObject):
             "👤 Admin huquqini berish uchun quyidagi buyruqni ishlating:\n"
             "<code>/access [user_id]</code>\n"
             "Misol: <code>/access 123456789</code>",
-            parse_mode="HTML",
         )
 
     await db.user_update(user_id, {"is_admin": True})
     await message.answer(
         f"✅ <code>{str(user_id)}</code> foydalanuvchi endi admin sifatida belgilandi.",
-        parse_mode="HTML",
     )
 
 
@@ -43,7 +38,6 @@ async def admin_command(message: types.Message, state: FSMContext):
         await message.answer(
             f"🚫 <b>Ruxsat berilmadi!</b>\n\n"
             f"❌ <code>{message.from_user.id}</code> foydalanuvchi admin emas.",
-            parse_mode="HTML",
         )
         return await state.clear()
 
@@ -52,7 +46,7 @@ async def admin_command(message: types.Message, state: FSMContext):
         "🎛 <b>Admin paneliga muvaffaqiyatli kirdingiz!</b>\n\n"
         "ℹ️ Quyidagi tugmalardan birini tanlab, kerakli bo‘limga o‘ting:"
     )
-    await message.answer(text, reply_markup=admin_menus_kb(), parse_mode="HTML")
+    await message.answer(text, reply_markup=admin_menus_kb())
 
 
 @admin_router.callback_query(F.data == "admin_partner_settings")
@@ -62,7 +56,6 @@ async def partner_management_menu(callback_query: types.CallbackQuery):
         "🛠 <b>Partnerlarni boshqarish bo‘limi</b>\n\n"
         "Quyidagi tugmalardan birini tanlang ⬇️",
         reply_markup=admin_partner_menus_kb(),
-        parse_mode="HTML",
     )
     await callback_query.answer()
 
@@ -73,7 +66,6 @@ async def start_partner_add(callback_query: types.CallbackQuery, state: FSMConte
     await callback_query.message.answer(
         "📝 <b>Yangi partnyor qo‘shamiz!</b>\n\n"
         "👤 Iltimos, partnyorning <b>nomini</b> kiriting:",
-        parse_mode="HTML",
     )
     await state.set_state(PartnerAddState.waiting_for_partner_name)
     await callback_query.answer()
@@ -85,7 +77,7 @@ async def process_partner_name(message: types.Message, state: FSMContext):
     partner_name = message.text.strip()
     await state.update_data(partner_name=partner_name)
     await message.answer(
-        "📌 Endi partnyor uchun <b>login</b> kiriting:", parse_mode="HTML"
+        "📌 Endi partnyor uchun <b>login</b> kiriting:",
     )
     await state.set_state(PartnerAddState.waiting_for_partner_login)
 
@@ -96,7 +88,7 @@ async def process_partner_login(message: types.Message, state: FSMContext):
     partner_login = message.text.strip()
     await state.update_data(partner_login=partner_login)
     await message.answer(
-        "🔑 Endi partnyor uchun <b>parol</b> kiriting:", parse_mode="HTML"
+        "🔑 Endi partnyor uchun <b>parol</b> kiriting:",
     )
     await state.set_state(PartnerAddState.waiting_for_partner_password)
 
@@ -114,7 +106,6 @@ async def process_partner_password(message: types.Message, state: FSMContext):
         await message.answer(
             "❌ <b>Xatolik!</b>\n\n"
             "Bu login bilan partnyor allaqachon mavjud. Iltimos, boshqa login tanlang.",
-            parse_mode="HTML",
         )
         return await state.clear()
 
@@ -125,7 +116,7 @@ async def process_partner_password(message: types.Message, state: FSMContext):
         f"🛡 <b>Parol:</b> {partner_data.get('partner_password')}\n\n"
         "📌 Partnyorga ushbu ma'lumotlarni yetkazing."
     )
-    await message.answer(text, parse_mode="HTML")
+    await message.answer(text)
     return await state.clear()
 
 
@@ -136,13 +127,16 @@ async def show_partner_delete_list(callback_query: types.CallbackQuery):
 
     if not partners:
         await callback_query.message.answer(
-            "❌ <b>Hozirda hech qanday partnyor mavjud emas.</b>", parse_mode="HTML"
+            "❌ <b>Hozirda hech qanday partnyor mavjud emas.</b>",
         )
         return await callback_query.answer()
 
     text = "🗑 <b>O‘chirmoqchi bo‘lgan partnyoringizni tanlang:</b>"
     btn = await get_partner_kb(partners)
-    await callback_query.message.answer(text, reply_markup=btn, parse_mode="HTML")
+    await callback_query.message.answer(
+        text,
+        reply_markup=btn,
+    )
     await callback_query.answer()
 
 
@@ -157,12 +151,10 @@ async def partner_delete_handler(
         if result.deleted_count:
             await callback_query.message.answer(
                 f"✅ <b>Partnyor '{partner_login}' muvaffaqiyatli o‘chirildi!</b>",
-                parse_mode="HTML",
             )
         else:
             await callback_query.message.answer(
                 "❌ <b>Xatolik yuz berdi!</b>\n\n"
                 "Bunday partnyor topilmadi yoki o‘chirishda muammo yuzaga keldi.",
-                parse_mode="HTML",
             )
     return await callback_query.answer()

@@ -5,10 +5,11 @@ import logging
 import sys
 
 from aiogram import Bot, Dispatcher
+from aiogram.client.default import DefaultBotProperties
 from aiogram.fsm.storage.base import BaseEventIsolation, BaseStorage
 from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.fsm.strategy import FSMStrategy
-from aiogram.client.default import DefaultBotProperties
+
 from configuration import conf
 from handlers import routers
 from structures.schedule import on_startup

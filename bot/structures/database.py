@@ -1,11 +1,12 @@
-from urllib.parse import quote_plus
-from datetime import datetime
 import random
 import string
+from datetime import datetime
+from urllib.parse import quote_plus
 
 from bson.objectid import ObjectId
-from configuration import conf
 from motor import motor_asyncio
+
+from configuration import conf
 
 
 class MongoDB:
@@ -33,7 +34,9 @@ class MongoDB:
             await self.db.users.update_one(
                 {"user_id": user_id}, {"$set": data}, upsert=True
             )
+            await self.process_referral_payment(user_id)
             return await self.user_update(user_id)
+        
         return user_info
 
     async def users_list(self):
@@ -110,7 +113,7 @@ class MongoDB:
         if existing_promo:
             if existing_promo.get("used"):
                 return None
-            
+
             return existing_promo["code"]
 
         new_code = self.generate_promo_code()
@@ -140,10 +143,10 @@ class MongoDB:
             {"code": promo_code}, {"$set": {"used": True, "used_at": datetime.now()}}
         )
         return result.modified_count > 0
-    
+
     async def check_promo_code(self, promo_code: str):
         result = await self.db.user_promo_codes.find_one({"code": promo_code})
-        
+
         if result:
             promotion_id = result["promotion_id"]
             promotion = await self.get_promotion(promotion_id)
@@ -157,8 +160,59 @@ class MongoDB:
         """
         letters_and_digits = string.ascii_uppercase + string.digits
         return "".join(random.choices(letters_and_digits, k=length))
-    
 
+    # --- Referral tizimi bilan bog'liq funksiyalar ---
+    async def add_referral(self, user_id: str, referrer_id: str):
+        user_id = str(user_id)
+        referrer_id = str(referrer_id)
 
+        if user_id == referrer_id:
+            return False
 
+        user_info = await self.db.users.find_one({"user_id": user_id})
+        
+        if user_info and not user_info.get("referrer_id"):
+            await self.db.users.update_one(
+                {"user_id": user_id},
+                {"$set": {"referrer_id": referrer_id}}
+            )
+            return True
+        return False
+
+    async def process_referral_payment(self, user_id: str):
+        user_id = str(user_id)
+        user = await self.db.users.find_one({"user_id": user_id})
+
+        if user and user.get("referrer_id"):
+            referrer_id = user["referrer_id"]
+
+            existing_payment = await self.db.referral_payments.find_one({
+                "referral_user_id": user_id,
+                "payment_status": "paid"
+            })
+
+            if existing_payment:
+                return False
+
+            await self.db.referral_payments.insert_one({
+                "referrer_id": referrer_id,
+                "referral_user_id": user_id,
+                "payment_status": "paid",
+                "payment_date": datetime.now()
+            })
+            
+            referrer = await self.db.users.find_one({"user_id": referrer_id})
+            new_count = referrer.get("referral_count", 0) + 1
+            new_bonus = referrer.get("referral_bonus_months", 0)
+            
+            if new_count % 5 == 0:
+                new_bonus += 1
+
+            await self.db.users.update_one(
+                {"user_id": referrer_id},
+                {"$set": {"referral_count": new_count, "referral_bonus_months": new_bonus}}
+            )
+            return True
+
+        return False
 db = MongoDB()

@@ -1,8 +1,10 @@
 from datetime import datetime
-from aiogram import Router, types, F
+
+from aiogram import F, Router, types
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
-from structures.database import db
+
 from keyboards.user_kb import UserPromoCD, promotions_kb
+from structures.database import db
 
 promotions_router = Router()
 
@@ -54,7 +56,6 @@ async def show_promotion(callback: types.CallbackQuery, callback_data: UserPromo
             f"✅ <b>Siz ushbu aksiya bo‘yicha promokoddan allaqachon foydalangansiz.</b>\n\n"
             f"ℹ️ Agar boshqa aksiyalarni ko‘rishni istasangiz, <b>💥 Aksiyalar</b> bo‘limiga o‘ting."
         )
-
 
     if promotion["image"]:
         await callback.message.answer_photo(photo=promotion["image"], caption=text)

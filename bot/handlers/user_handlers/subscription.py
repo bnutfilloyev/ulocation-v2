@@ -1,11 +1,13 @@
-from aiogram import F, Router, types, Bot
-from aiogram.types import Message, PreCheckoutQuery
 from datetime import datetime, timedelta
+
+from aiogram import Bot, F, Router, types
+from aiogram.fsm.context import FSMContext
+from aiogram.types import Message, PreCheckoutQuery
 from dateutil.relativedelta import relativedelta
+
 from keyboards.common_kb import main_menu_kb
 from structures.database import db
 from structures.states import RegState
-from aiogram.fsm.context import FSMContext
 
 invoices_router = Router()
 
@@ -59,6 +61,5 @@ async def successful_payment(message: Message, state: FSMContext) -> None:
         f"📅 <b>Obunangiz</b> <code>{new_expiry.strftime('%d-%m-%Y')}</code> gacha amal qiladi.\n\n"
         "✅ Endi botimizning barcha imkoniyatlaridan bemalol foydalanishingiz mumkin!\n\n"
         "🔽 Quyidagi tugmalardan birini tanlang:",
-        reply_markup=main_menu_kb(),
-        parse_mode="HTML",
+        reply_markup=main_menu_kb,
     )

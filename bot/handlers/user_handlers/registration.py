@@ -1,9 +1,10 @@
 from aiogram import F, Router, types
 from aiogram.fsm.context import FSMContext
-from keyboards.common_kb import contact_kb, main_menu_kb
-from structures.states import RegState
-from structures.database import db
+
 from configuration import conf
+from keyboards.common_kb import contact_kb, main_menu_kb
+from structures.database import db
+from structures.states import RegState
 
 register_router = Router()
 
@@ -19,7 +20,10 @@ async def input_firstname(message: types.Message, state: FSMContext):
         '📲 <b>"Raqamni yuborish"</b> tugmasini bosing va avtomatik ravishda ma’lumotlaringizni jo‘nating.'
     )
 
-    await message.answer(text=text, reply_markup=contact_kb(), parse_mode="HTML")
+    await message.answer(
+        text=text,
+        reply_markup=contact_kb,
+    )
     await state.set_state(RegState.phone_number)
 
 
@@ -35,7 +39,6 @@ async def input_phone(message: types.Message, state: FSMContext):
     else:
         return await message.answer(
             "❌ <b>Noto‘g‘ri format!</b> Iltimos, telefon raqamingizni to‘g‘ri kiriting.",
-            parse_mode="HTML",
         )
 
     await state.update_data(input_phone=phone)
