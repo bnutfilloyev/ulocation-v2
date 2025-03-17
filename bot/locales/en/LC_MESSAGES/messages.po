@@ -1,0 +1,60 @@
+# English translations for PROJECT.
+# Copyright (C) 2025 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2025-03-17 02:50+0500\n"
+"PO-Revision-Date: 2025-03-17 00:40+0500\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: en\n"
+"Language-Team: en <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: utils/user_check.py:17
+msgid ""
+"🌐 <b>Tilni tanlang!</b>\n"
+"\n"
+"🔹 <b>Botdan foydalanish uchun tilni tanlang:</b>"
+msgstr ""
+
+#: utils/user_check.py:25
+msgid ""
+"👋 <b>Xush kelibsiz!</b>\n"
+"\n"
+"🔹 Botdan foydalanish uchun avval <b>ro‘yxatdan o‘tishingiz</b> kerak.\n"
+"📝 Iltimos, <b>ism va familiyangizni</b> kiriting."
+msgstr ""
+
+#: utils/user_check.py:35
+msgid ""
+"📞 <b>Telefon raqamingizni kiriting!</b>\n"
+"\n"
+"🔹 <b>Qo‘lda yozish shart emas!</b>\n"
+"📲 <b>\"Raqamni yuborish\"</b> tugmasini bosing va avtomatik ravishda "
+"ma’lumotlaringizni jo‘nating."
+msgstr ""
+
+#: utils/user_check.py:45
+msgid "🎉 Xush kelibsiz!"
+msgstr ""
+
+#: utils/user_check.py:47
+msgid ""
+"🔹 <b>Botdan foydalanish uchun obuna bo‘lishingiz kerak.</b>\n"
+"📅 <b>Oylik obuna narxi:</b> 15,000 UZS\n"
+"\n"
+"💳 To‘lovni amalga oshirish uchun quyidagi tugmadan foydalaning."
+msgstr ""
+
+#: utils/user_check.py:53
+msgid "Oylik obuna"
+msgstr ""
+

@@ -3,11 +3,30 @@ from aiogram.fsm.context import FSMContext
 
 from configuration import conf
 from keyboards.common_kb import contact_kb, main_menu_kb
+from keyboards.user_kb import  LanguageCD
 from structures.database import db
 from structures.states import RegState
+from aiogram.utils.i18n import gettext as _
+from utils.user_check import check_user_stepwise
 
 register_router = Router()
 
+
+@register_router.callback_query(LanguageCD.filter())
+async def set_language(query: types.CallbackQuery, callback_data: LanguageCD, state: FSMContext):   
+    await state.clear()
+    await db.user_update(user_id=query.from_user.id, data={"language": callback_data.lang})
+    await query.message.delete()
+
+    if not await check_user_stepwise(query.message, state):  
+        return
+    
+    text = (
+        "😊 <b>Sizni yana ko‘rishdan xursandmiz!</b>\n\n"
+        "📌 <b>Botdan foydalanish uchun quyidagi tugmalardan foydalaning:</b>"
+    )
+    await query.message.answer(text=_(text), reply_markup=main_menu_kb)
+    
 
 @register_router.message(RegState.fullname, ~F.text.startswith("/"))
 async def input_firstname(message: types.Message, state: FSMContext):

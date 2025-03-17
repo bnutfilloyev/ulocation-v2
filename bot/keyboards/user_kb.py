@@ -19,3 +19,15 @@ async def promotions_kb(promotions: list):
             text=promo["name"], callback_data=UserPromoCD(promo_id=str(promo["_id"]))
         )
     return builder.adjust(1).as_markup()
+
+
+class LanguageCD(CallbackData, prefix="language"):
+    lang: str
+
+
+def language_kb():
+    builder = InlineKeyboardBuilder()
+    builder.button(text="🇺🇿 O'zbekcha", callback_data=LanguageCD(lang="uz"))
+    builder.button(text="🇷🇺 Русский", callback_data=LanguageCD(lang="ru"))
+    builder.button(text="🇺🇸 English", callback_data=LanguageCD(lang="en"))
+    return builder.adjust(2).as_markup()

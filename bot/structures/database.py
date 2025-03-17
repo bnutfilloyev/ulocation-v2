@@ -215,4 +215,9 @@ class MongoDB:
             return True
 
         return False
+
+    async def get_referrer(self, user_id: str) -> str:
+        user = await self.db.users.find_one({"user_id": str(user_id)})
+        return user.get("referrer_id") if user else None
+
 db = MongoDB()

@@ -21,7 +21,7 @@ async def pre_checkout_query(query: PreCheckoutQuery) -> None:
 
 
 @invoices_router.message(RegState.subscription, F.successful_payment)
-async def successful_payment(message: Message, state: FSMContext) -> None:
+async def successful_payment(message: Message, state: FSMContext, bot: Bot) -> None:
     """To‘lov muvaffaqiyatli amalga oshirilgandan keyin obunani yangilash"""
     now = datetime.now()
     user = await db.user_update(user_id=message.from_user.id)
@@ -63,3 +63,12 @@ async def successful_payment(message: Message, state: FSMContext) -> None:
         "🔽 Quyidagi tugmalardan birini tanlang:",
         reply_markup=main_menu_kb,
     )
+
+    # 🔹 Referral orqali qo‘shilgan foydalanuvchining refererini topish
+    referrer_id = await db.get_referrer(user_id=message.from_user.id)
+    if referrer_id:
+        await bot.send_message(
+            referrer_id,
+            f"💰 Sizning referral havolangiz orqali foydalanuvchi "
+            f"<b>{message.from_user.full_name}</b> obuna bo‘ldi!"
+        )

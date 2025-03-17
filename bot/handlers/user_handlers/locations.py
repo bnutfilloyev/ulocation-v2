@@ -1,4 +1,5 @@
 from aiogram import F, Router, types
+from middlewares.subscription_middleware import SubscriptionMiddleware
 
 locations_router = Router()
 

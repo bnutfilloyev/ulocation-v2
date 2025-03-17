@@ -14,6 +14,12 @@ from configuration import conf
 from handlers import routers
 from structures.schedule import on_startup
 
+from middlewares.subscription_middleware import SubscriptionMiddleware
+from middlewares.i18n_middleware import LanguageMiddleware
+from aiogram.utils.i18n import I18n
+
+
+i18n = I18n(path='locales', default_locale='uz', domain='messages')
 
 def get_dispatcher(
     storage: BaseStorage = MemoryStorage(),
@@ -26,6 +32,10 @@ def get_dispatcher(
         fsm_strategy=fsm_strategy,
         events_isolation=event_isolation,
     )
+
+    dp.message.middleware(LanguageMiddleware(i18n))
+    dp.message.middleware(SubscriptionMiddleware())
+
     for router in routers:
         dp.include_router(router)
 
