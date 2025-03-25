@@ -1,7 +1,7 @@
 from mongoengine import (
     Document, StringField, DateTimeField, BooleanField, FloatField, 
     EmbeddedDocument, EmbeddedDocumentField, ListField, ReferenceField, 
-    IntField, ImageField
+    IntField, ImageField, CASCADE
 )
 import datetime
 
@@ -83,7 +83,7 @@ class Category(BaseDocument):
 class Subcategory(BaseDocument):
     """Subcategory for locations."""
     name = EmbeddedDocumentField(MultilangText, required=True)
-    category = ReferenceField(Category, required=True)
+    category = ReferenceField(Category, reverse_delete_rule=CASCADE, required=True)
     
     meta = {
         'collection': 'subcategories',
@@ -94,6 +94,13 @@ class Subcategory(BaseDocument):
     def __str__(self):
         name_str = str(self.name)
         return name_str if name_str else f"Subcategory-{self.id}"
+    
+    def safe_category(self):
+        """Safely return the category, handling DoesNotExist errors."""
+        try:
+            return self.category
+        except:
+            return None
 
 class Location(BaseDocument):
     """Location/place with details and geographical coordinates."""
