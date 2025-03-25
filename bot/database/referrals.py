@@ -1,4 +1,5 @@
 from datetime import datetime
+from dateutil.relativedelta import relativedelta
 
 from .base import MongoDB
 
@@ -49,6 +50,13 @@ class ReferralDB(MongoDB):
             
             if new_count % 5 == 0:
                 new_bonus += 1
+                expiry_date = referrer.get("expiry_date")
+                if expiry_date:
+                    new_expiry = expiry_date + relativedelta(months=1)
+                    await self.db.users.update_one(
+                        {"user_id": referrer_id},
+                        {"$set": {"expiry_date": new_expiry}}
+                    )
 
             await self.db.users.update_one(
                 {"user_id": referrer_id},

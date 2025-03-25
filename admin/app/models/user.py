@@ -14,15 +14,17 @@ class Payment(EmbeddedDocument):
 class User(Document):
     user_id = StringField(required=True, unique=True)
     username = StringField(sparse=True)
-    first_name = StringField()
-    last_name = StringField()
     input_fullname = StringField()
     input_phone = StringField()
     language = StringField(default="uz")
+    agreement = BooleanField(default=False)
     
     is_subscribed = BooleanField(default=False)
     expiry_date = DateTimeField()
     payments = ListField(EmbeddedDocumentField(Payment))
+    referral_bonus_months = FloatField(default=0)
+    referral_count = FloatField(default=0)
+    referrer_id = StringField()
     
     # System fields
     created_at = DateTimeField(default=datetime.datetime.now)
@@ -35,7 +37,8 @@ class User(Document):
         'indexes': [
             'user_id', 'username', 'is_subscribed',
             'expiry_date', 'is_admin'
-        ]
+        ],
+        'dynamic': True
     }
     
     def __str__(self):
