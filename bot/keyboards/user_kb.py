@@ -1,9 +1,6 @@
 from aiogram.filters.callback_data import CallbackData
-from aiogram.types import (InlineKeyboardButton, KeyboardButton,
-                           ReplyKeyboardMarkup, ReplyKeyboardRemove)
 from aiogram.utils.keyboard import InlineKeyboardBuilder, ReplyKeyboardBuilder
 
-from structures.database import location_db
 
 
 class UserPromoCD(CallbackData, prefix="promo"):

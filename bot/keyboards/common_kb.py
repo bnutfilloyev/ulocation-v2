@@ -1,7 +1,7 @@
-from aiogram.filters.callback_data import CallbackData
 from aiogram.types import (KeyboardButton, ReplyKeyboardMarkup,
                            ReplyKeyboardRemove)
-from aiogram.utils.keyboard import InlineKeyboardBuilder
+from aiogram.utils.keyboard import InlineKeyboardBuilder, ReplyKeyboardBuilder
+
 
 remove_kb = ReplyKeyboardRemove()
 
@@ -29,8 +29,33 @@ main_menu_kb = ReplyKeyboardMarkup(
             KeyboardButton(text="💥 Aksiyalar"),
             KeyboardButton(text="📍 Lokatsiyalar"),
         ],
-        [KeyboardButton(text="🎯 Referral")],
+        [
+            KeyboardButton(text="🎯 Referral"),
+            KeyboardButton(text="🤝 Hamkor bo'lish"),
+        ],
+        [
+            KeyboardButton(text="📞 Aloqa"),
+            KeyboardButton(text="💬 FAQ")
+        ],
     ],
     resize_keyboard=True,
     input_field_placeholder=None,
 )
+
+
+link_kb = ReplyKeyboardMarkup(
+    keyboard=[
+        [KeyboardButton(text="📞 Aloqa"), KeyboardButton(text="💬 FAQ")],
+    ],
+    resize_keyboard=True,
+    one_time_keyboard=True,
+)
+
+# Faqat "Roziman" tugmasini yaratish
+def agreement_kb():
+    builder = InlineKeyboardBuilder()
+    builder.button(text="✅ Roziman", callback_data="agreement:accept")
+    
+    return builder.as_markup()
+
+

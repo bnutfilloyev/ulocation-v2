@@ -14,7 +14,7 @@ def rating_kb():
     # Add cancel button
     builder.button(text="❌ Izoh qoldirishni bekor qilish", callback_data="cancel_comment")
     
-    builder.adjust(5, 1)  # 5 buttons in first row, 1 in second
+    builder.adjust(1, 1)  # 5 buttons in first row, 1 in second
     
     return builder.as_markup()
 

@@ -24,6 +24,12 @@ class GeoLocation(EmbeddedDocument):
             return f"({self.latitude}, {self.longitude})"
         return "No coordinates"
 
+class Image(EmbeddedDocument):
+    """Image document for storing image data."""
+    image = ImageField(required=False)
+    caption = StringField()
+
+
 class Comment(EmbeddedDocument):
     """User comment with rating for a location."""
     user_id = StringField(required=True)
@@ -105,14 +111,10 @@ class Location(BaseDocument):
     price_range = StringField()  # "$", "$$", "$$$" etc.
     website = StringField()
     phone = StringField()
-    
+
     # Media
-    image = ImageField(
-        thumbnail_size=(100, 100, True),
-        collection_name='locations_images',
-        size=(800, 600, True),
-        required=False
-    )
+    images = ListField(EmbeddedDocumentField(Image))  # List of images with metadata
+
     
     # Geographical data
     location = EmbeddedDocumentField(GeoLocation, required=True)
@@ -130,8 +132,7 @@ class Location(BaseDocument):
         'collection': 'locations',
         'ordering': ['-created_at'],
         'indexes': [
-            'city', 'category', 'subcategory', 'tags', 'is_active', 'average_rating',
-            {'fields': ['location'], 'geo': True}
+            'city', 'category', 'subcategory', 'tags', 'is_active'
         ]
     }
     

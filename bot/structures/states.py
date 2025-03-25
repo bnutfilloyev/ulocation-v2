@@ -4,6 +4,7 @@ from aiogram.filters.state import State, StatesGroup
 class RegState(StatesGroup):
     fullname = State()
     phone_number = State()
+    agreement = State()  # Yangi holat qo'shing
     subscription = State()
 
 

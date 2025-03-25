@@ -227,14 +227,14 @@ async def show_location_images(callback: types.CallbackQuery, state: FSMContext)
     image_file = await location_db.get_image_file(current_image_id)
     
     if not image_file:
-        await callback.answer("Rasm ma'lumotlarini yuklab olishda xatolik yuz berdi. Iltimos, keyinroq qayta urinib ko'ring.")
+        await callback.answer("Rasm ma'lumotlarini yuklab olishda xatolik yuz berdi. Iltimos, keyinroq qayta urinib ko'ring.", show_alert=True)
         return
     
     # Get the image binary data
     image_data = await location_db.get_image_data(current_image_id)
     
     if not image_data:
-        await callback.answer("Rasm ma'lumotlarini yuklab olishda xatolik yuz berdi. Servidor bilan bog'lanishni tekshirib, qayta urinib ko'ring.")
+        await callback.answer("Rasm ma'lumotlarini yuklab olishda xatolik yuz berdi. Servidor bilan bog'lanishni tekshirib, qayta urinib ko'ring.", show_alert=True)
         return
     
     # Get location name for caption
@@ -244,7 +244,7 @@ async def show_location_images(callback: types.CallbackQuery, state: FSMContext)
     location_name = loc.get('name', {}).get(locale, loc.get('name', {}).get('uz', "Noma'lum"))
     
     # Create caption with image info
-    filename = image_file.get('filename', '')
+    filename = image_file.get('caption', '')
     width = image_file.get('width', 0)
     height = image_file.get('height', 0)
     caption = f"🖼 <b>{location_name}</b>\n"

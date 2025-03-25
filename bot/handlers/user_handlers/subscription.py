@@ -12,9 +12,7 @@ from structures.states import RegState
 invoices_router = Router()
 
 
-@invoices_router.pre_checkout_query(
-    RegState.subscription, F.invoice_payload == "subscription"
-)
+@invoices_router.pre_checkout_query(RegState.subscription, F.invoice_payload == "subscription")
 async def pre_checkout_query(query: PreCheckoutQuery) -> None:
     await query.answer(ok=True)
 
@@ -32,8 +30,6 @@ async def successful_payment(message: Message, state: FSMContext, bot: Bot) -> N
     payment_amount = message.successful_payment.total_amount / 100
     currency = message.successful_payment.currency
 
-    state_data = await state.get_data()
-
     payment_log = {
         "payment_id": message.successful_payment.invoice_payload,
         "payment_date": now,
@@ -42,8 +38,6 @@ async def successful_payment(message: Message, state: FSMContext, bot: Bot) -> N
     }
 
     update_data = {
-        "input_fullname": state_data.get("input_fullname"),
-        "input_phone": state_data.get("input_phone"),
         "username": message.from_user.username,
         "is_subscribed": True,
         "expiry_date": new_expiry,
