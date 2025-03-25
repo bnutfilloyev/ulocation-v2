@@ -31,14 +31,17 @@ def initialize_db():
         "host": Config.MONGODB_HOST,
         "port": Config.MONGODB_PORT,
     }
+    MONGO_URI = f"mongodb://{Config.MONGODB_HOST}:{Config.MONGODB_PORT}/{Config.MONGODB_NAME}"
     
     # Add authentication if provided
     if Config.MONGODB_USERNAME and Config.MONGODB_PASSWORD:
         connection_kwargs["username"] = Config.MONGODB_USERNAME
         connection_kwargs["password"] = Config.MONGODB_PASSWORD
+        MONGO_URI = f"mongodb://{Config.MONGODB_USERNAME}:{Config.MONGODB_PASSWORD}@{Config.MONGODB_HOST}:{Config.MONGODB_PORT}/{Config.MONGODB_NAME}"
+    
     
     try:
-        connect(**connection_kwargs)
-        print(f"Connected to MongoDB: {Config.MONGODB_NAME}")
+        connect(MONGO_URI)
+        print(f"Connected to MongoDB: {MONGO_URI}")
     except Exception as e:
         print(f"Error connecting to MongoDB: {e}")
