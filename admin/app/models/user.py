@@ -14,6 +14,8 @@ class Payment(EmbeddedDocument):
 class User(Document):
     user_id = StringField(required=True, unique=True)
     username = StringField(sparse=True)
+    first_name = StringField()
+    last_name = StringField()
     input_fullname = StringField()
     input_phone = StringField()
     language = StringField(default="uz")
