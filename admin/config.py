@@ -36,7 +36,6 @@ def initialize_db():
     if Config.MONGODB_USERNAME and Config.MONGODB_PASSWORD:
         connection_kwargs["username"] = Config.MONGODB_USERNAME
         connection_kwargs["password"] = Config.MONGODB_PASSWORD
-        connection_kwargs["authentication_source"] = "admin"
     
     try:
         connect(**connection_kwargs)
