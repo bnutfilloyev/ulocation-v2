@@ -8,7 +8,7 @@ class Referral(Document):
     paid = BooleanField(default=False)
     
     meta = {
-        'collection': 'referrals',
+        'collection': 'referral_payments',
         'ordering': ['-created_at']
     }
     
