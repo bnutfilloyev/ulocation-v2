@@ -1,9 +1,13 @@
+from typing import Any, Awaitable, Callable, Dict
+
 from aiogram import BaseMiddleware
-from aiogram.types import Message
-from typing import Callable, Awaitable, Dict, Any
 from aiogram.fsm.context import FSMContext
+from aiogram.types import Message
+
 from structures.states import RegState
-from utils.user_check import check_user_stepwise  # Yangi funksiyani import qilish
+from utils.user_check import \
+    check_user_stepwise  # Yangi funksiyani import qilish
+
 
 class SubscriptionMiddleware(BaseMiddleware):
     async def __call__(

@@ -1,16 +1,15 @@
-from aiogram import F, Router, types
+from aiogram import F, Router, types, Bot
 from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
 
+from database import partner_db, promotion_db
 from keyboards.common_kb import remove_kb, skip_kb
-from keyboards.partner_kb import (
-    PartnerMenuCD,
-    PartnerPromotionCD,
-    get_partner_promotions_kb,
-    partner_menu_kb,
-)
-from structures.database import db
+from keyboards.partner_kb import (PartnerMenuCD, PartnerPromotionCD,
+                                  get_partner_promotions_kb, partner_menu_kb)
 from structures.states import AddPromotionState, PartnerAuthState
+
+from configuration import conf
+import os
 
 partner_router = Router()
 
@@ -39,10 +38,8 @@ async def process_partner_login(message: types.Message, state: FSMContext):
 @partner_router.message(PartnerAuthState.waiting_for_partner_password)
 async def process_partner_password(message: types.Message, state: FSMContext):
     """Login va parolni tekshirish"""
-    password = message.text.strip()
     data = await state.get_data()
-    login = data.get("login")
-    partner = await db.check_partner_credentials(login, password)
+    partner = await partner_db.check_partner_credentials(login=data.get("login"), password=message.text.strip())
 
     if partner is None:
         await message.answer(
@@ -61,7 +58,6 @@ async def process_partner_password(message: types.Message, state: FSMContext):
         reply_markup=btn,
     )
     return await state.clear()
-    print(state)
 
 
 @partner_router.callback_query(PartnerMenuCD.filter(F.action == "add_promotion"))
@@ -113,7 +109,7 @@ async def process_promotion_description(message: types.Message, state: FSMContex
 
 
 @partner_router.message(AddPromotionState.waiting_for_promotion_image, F.photo | F.text)
-async def process_promotion_image(message: types.Message, state: FSMContext):
+async def process_promotion_image(message: types.Message, state: FSMContext, bot: Bot):
     """Aksiya rasmini qabul qilish"""
     if message.text and message.text == "🚫 O'tkazib yuborish":
         await state.update_data(photo=None)
@@ -121,8 +117,11 @@ async def process_promotion_image(message: types.Message, state: FSMContext):
         await message.answer("❌ <b>Rasm yuboring yoki tugmadan foydalaning!</b>")
         return
     else:
-        photo = message.photo[-1].file_id
-        await state.update_data(photo=photo)
+        photo = message.photo[-1]
+        photo_path = os.path.join(conf.bot.upload_dir, "promotions", f"{photo.file_id}.jpg")
+        os.makedirs(os.path.dirname(photo_path), exist_ok=True)
+        await bot.download(file=photo, destination=photo_path)
+        await state.update_data(photo={"file_id": photo.file_id, "path": photo_path, "width": photo.width, "height": photo.height})
 
     await message.answer(
         "📦 <b>Aksiya turini tanlang</b>\n\n"
@@ -139,7 +138,7 @@ async def process_promotion_category(message: types.Message, state: FSMContext):
     await state.update_data(category=category)
 
     data = await state.get_data()
-    promo_id = await db.add_promotion(
+    promo_id = await promotion_db.add_promotion(
         partner_id=data["partner_id"],
         name=data["promo_name"],
         description=data["promo_description"],
@@ -147,19 +146,18 @@ async def process_promotion_category(message: types.Message, state: FSMContext):
         image=data["photo"],
     )
 
-    if promo_id:
-        btn = await partner_menu_kb(data["partner_id"])
-        text = f"✅ <b>Aksiya '{data['promo_name']}' muvaffaqiyatli qo‘shildi!</b>"
-        await message.answer(
-            text,
-            reply_markup=btn,
-        )
-    else:
+    if not promo_id:
         await message.answer(
             "❌ <b>Xatolik yuz berdi.</b> Iltimos, qayta urinib ko‘ring.",
         )
+        return await state.clear()
+
+    btn = await partner_menu_kb(data["partner_id"])
+    text = f"✅ <b>Aksiya '{data['promo_name']}' muvaffaqiyatli qo‘shildi!</b>"
+    await message.answer(text, reply_markup=btn)
 
     await state.clear()
+
 
 
 @partner_router.callback_query(PartnerMenuCD.filter(F.action == "finish_promotion"))
@@ -168,7 +166,7 @@ async def select_promotion_to_finish(
 ):
     """Faol aksiyalarni tugatish"""
     partner_id = callback_data.partner_id
-    promotions = await db.get_active_promotions(partner_id)
+    promotions = await promotion_db.get_active_promotions(partner_id)
 
     if not promotions:
         await callback_query.message.answer(
@@ -216,7 +214,7 @@ async def process_promo_code(message: types.Message, state: FSMContext):
     """Promokodni qabul qilish va tekshirish"""
     promo_code = message.text.strip()
 
-    promo = await db.check_promo_code(promo_code)
+    promo = await promotion_db.check_promo_code(promo_code)
     if promo is None:
         await message.answer(
             "❌ <b>Promokod topilmadi!</b>\n\n"
@@ -224,7 +222,7 @@ async def process_promo_code(message: types.Message, state: FSMContext):
         )
         return await state.clear()
 
-    marks_promo_code_as_used = await db.mark_promo_code_as_used(promo_code)
+    marks_promo_code_as_used = await promotion_db.mark_promo_code_as_used(promo_code)
     if not marks_promo_code_as_used:
         await message.answer(
             "❌ <b>Promokod allaqachon ishlatilgan!</b>\n\n"
@@ -241,7 +239,7 @@ async def process_promo_code(message: types.Message, state: FSMContext):
         f"🎁 Ushbu promokodni mijoz foydalanishi mumkin."
     )
 
-    await db.mark_promo_code_as_used(promo_code)
+    await promotion_db.mark_promo_code_as_used(promo_code)
 
     await message.answer(text)
     await state.clear()

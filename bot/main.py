@@ -9,15 +9,13 @@ from aiogram.client.default import DefaultBotProperties
 from aiogram.fsm.storage.base import BaseEventIsolation, BaseStorage
 from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.fsm.strategy import FSMStrategy
+from aiogram.utils.i18n import I18n
 
 from configuration import conf
 from handlers import routers
-from structures.schedule import on_startup
-
-from middlewares.subscription_middleware import SubscriptionMiddleware
 from middlewares.i18n_middleware import LanguageMiddleware
-from aiogram.utils.i18n import I18n
-
+from middlewares.subscription_middleware import SubscriptionMiddleware
+from structures.schedule import on_startup
 
 i18n = I18n(path='locales', default_locale='uz', domain='messages')
 

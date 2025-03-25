@@ -1,4 +1,3 @@
-import logging
 from dataclasses import dataclass, field
 
 from environs import Env
@@ -15,6 +14,7 @@ class BotConfig:
     admins: list = field(default_factory=lambda: env.list("ADMIN_IDS"))
     debug: bool = env.bool("DEBUG", False)
     payment_provider_token: str = env.str("CLICK_PAYMENTS_PROVIDER_TOKEN")
+    upload_dir: str = env.str("UPLOAD_DIR")
 
 
 @dataclass

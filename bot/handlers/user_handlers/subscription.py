@@ -5,8 +5,8 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, PreCheckoutQuery
 from dateutil.relativedelta import relativedelta
 
+from database import referral_db, user_db
 from keyboards.common_kb import main_menu_kb
-from structures.database import db
 from structures.states import RegState
 
 invoices_router = Router()
@@ -16,15 +16,13 @@ invoices_router = Router()
     RegState.subscription, F.invoice_payload == "subscription"
 )
 async def pre_checkout_query(query: PreCheckoutQuery) -> None:
-    """To‘lovni tasdiqlash"""
     await query.answer(ok=True)
 
 
 @invoices_router.message(RegState.subscription, F.successful_payment)
 async def successful_payment(message: Message, state: FSMContext, bot: Bot) -> None:
-    """To‘lov muvaffaqiyatli amalga oshirilgandan keyin obunani yangilash"""
     now = datetime.now()
-    user = await db.user_update(user_id=message.from_user.id)
+    user = await user_db.user_update(user_id=message.from_user.id)
 
     if user.get("expiry_date") and user["expiry_date"] > now:
         new_expiry = user["expiry_date"] + relativedelta(months=1)
@@ -43,18 +41,16 @@ async def successful_payment(message: Message, state: FSMContext, bot: Bot) -> N
         "currency": currency,
     }
 
-    invoice_data = {
-        **state_data,
+    update_data = {
+        "input_fullname": state_data.get("input_fullname"),
+        "input_phone": state_data.get("input_phone"),
+        "username": message.from_user.username,
         "is_subscribed": True,
-        "payment_id": message.successful_payment.invoice_payload,
-        "payment_date": now,
         "expiry_date": new_expiry,
-        "payment_amount": payment_amount,
-        "currency": currency,
         "payments": user.get("payments", []) + [payment_log],
     }
 
-    await db.user_update(user_id=message.from_user.id, data=invoice_data)
+    await user_db.user_update(user_id=message.from_user.id, data=update_data)
 
     await message.answer(
         f"🎉 <b>To'lov muvaffaqiyatli amalga oshirildi!</b>\n\n"
@@ -64,8 +60,9 @@ async def successful_payment(message: Message, state: FSMContext, bot: Bot) -> N
         reply_markup=main_menu_kb,
     )
 
-    # 🔹 Referral orqali qo‘shilgan foydalanuvchining refererini topish
-    referrer_id = await db.get_referrer(user_id=message.from_user.id)
+    await referral_db.process_referral_payment(user_id=message.from_user.id)
+    referrer_id = await referral_db.get_referrer(user_id=message.from_user.id)
+    
     if referrer_id:
         await bot.send_message(
             referrer_id,

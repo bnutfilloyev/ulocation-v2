@@ -2,15 +2,15 @@ from datetime import datetime
 
 from aiogram import F, Router, types
 
+from database import promotion_db
 from keyboards.user_kb import UserPromoCD, promotions_kb
-from structures.database import db
 
 promotions_router = Router()
 
 
 @promotions_router.message(F.text == "💥 Aksiyalar")
 async def list_promotions(message: types.Message):
-    promotions = await db.get_active_promotions()
+    promotions = await promotion_db.get_active_promotions()
 
     if not promotions:
         return await message.answer(
@@ -28,7 +28,7 @@ async def list_promotions(message: types.Message):
 async def show_promotion(callback: types.CallbackQuery, callback_data: UserPromoCD):
     """Foydalanuvchi tanlagan aksiya haqida ma’lumot berish va promokod yaratish"""
     promo_id = callback_data.promo_id
-    promotion = await db.get_promotion(promo_id)
+    promotion = await promotion_db.get_promotion(promo_id)
 
     if not promotion:
         return await callback.answer(
@@ -37,7 +37,7 @@ async def show_promotion(callback: types.CallbackQuery, callback_data: UserPromo
         )
 
     user_id = str(callback.from_user.id)
-    promo_code = await db.generate_user_promo_code(user_id, promo_id)
+    promo_code = await promotion_db.generate_user_promo_code(user_id, promo_id)
 
     if promo_code:
         text = (

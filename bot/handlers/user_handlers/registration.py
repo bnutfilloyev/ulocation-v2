@@ -1,23 +1,23 @@
 from aiogram import F, Router, types
 from aiogram.fsm.context import FSMContext
+from aiogram.utils.i18n import lazy_gettext as __
 
 from configuration import conf
+from database import user_db
 from keyboards.common_kb import contact_kb, main_menu_kb
-from keyboards.user_kb import  LanguageCD
-from structures.database import db
+from keyboards.user_kb import LanguageCD
 from structures.states import RegState
-from aiogram.utils.i18n import gettext as _
 from utils.user_check import check_user_stepwise
 
-register_router = Router()
+router = Router()
 
 
-@register_router.callback_query(LanguageCD.filter())
+@router.callback_query(LanguageCD.filter())
 async def set_language(query: types.CallbackQuery, callback_data: LanguageCD, state: FSMContext):   
-    await state.clear()
-    await db.user_update(user_id=query.from_user.id, data={"language": callback_data.lang})
     await query.message.delete()
-
+    await state.update_data(locale=callback_data.lang)
+    await user_db.user_update(user_id=query.from_user.id, data={"language": callback_data.lang})
+    
     if not await check_user_stepwise(query.message, state):  
         return
     
@@ -25,10 +25,10 @@ async def set_language(query: types.CallbackQuery, callback_data: LanguageCD, st
         "😊 <b>Sizni yana ko‘rishdan xursandmiz!</b>\n\n"
         "📌 <b>Botdan foydalanish uchun quyidagi tugmalardan foydalaning:</b>"
     )
-    await query.message.answer(text=_(text), reply_markup=main_menu_kb)
+    await query.message.answer(text=text, reply_markup=main_menu_kb)
     
 
-@register_router.message(RegState.fullname, ~F.text.startswith("/"))
+@router.message(RegState.fullname, ~F.text.startswith("/"))
 async def input_firstname(message: types.Message, state: FSMContext):
     """Foydalanuvchi ismini qabul qilish"""
     await state.update_data(input_fullname=message.text)
@@ -39,18 +39,12 @@ async def input_firstname(message: types.Message, state: FSMContext):
         '📲 <b>"Raqamni yuborish"</b> tugmasini bosing va avtomatik ravishda ma’lumotlaringizni jo‘nating.'
     )
 
-    await message.answer(
-        text=text,
-        reply_markup=contact_kb,
-    )
+    await message.answer(text=text, reply_markup=contact_kb)
     await state.set_state(RegState.phone_number)
 
 
-@register_router.message(
-    RegState.phone_number, ~F.text.startswith("/") | F.text | F.contact
-)
+@router.message(RegState.phone_number, ~F.text.startswith("/") | F.text | F.contact)
 async def input_phone(message: types.Message, state: FSMContext):
-    """Telefon raqamini qabul qilish"""
     if message.contact:
         phone = message.contact.phone_number
     elif message.text:

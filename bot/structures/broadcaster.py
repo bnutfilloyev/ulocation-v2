@@ -2,12 +2,8 @@ import asyncio
 import logging
 
 from aiogram import Bot
-from aiogram.exceptions import (
-    TelegramAPIError,
-    TelegramForbiddenError,
-    TelegramNotFound,
-    TelegramRetryAfter,
-)
+from aiogram.exceptions import (TelegramAPIError, TelegramForbiddenError,
+                                TelegramNotFound, TelegramRetryAfter)
 from aiogram.types import InlineKeyboardMarkup, ReplyKeyboardMarkup
 
 

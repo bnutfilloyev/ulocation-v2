@@ -28,3 +28,9 @@ class AddPromotionState(StatesGroup):
     waiting_for_promotion_description = State()
     waiting_for_promotion_image = State()
     waiting_for_promotion_category = State()
+
+
+# New states for adding comments to locations
+class AddCommentState(StatesGroup):
+    waiting_for_rating = State()
+    waiting_for_comment_text = State()

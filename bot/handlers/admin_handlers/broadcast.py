@@ -2,8 +2,8 @@ from aiogram import Bot, Router, types
 from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
 
+from database import user_db
 from structures.broadcaster import copy_message
-from structures.database import db
 from structures.states import BroadcastState
 
 broadcast_router = Router()
@@ -13,7 +13,7 @@ broadcast_router = Router()
 async def broadcast_command(message: types.Message, state: FSMContext):
     """Admin uchun xabar jo‘natish."""
 
-    user_update = await db.user_update(user_id=message.from_user.id)
+    user_update = await user_db.user_update(user_id=message.from_user.id)
 
     if not user_update.get("is_admin"):
         text = "🚫 <b>Ruxsat berilmadi!</b>\n\n" "❌ Siz admin emassiz."
@@ -35,7 +35,7 @@ async def send_broadcasts(message: types.Message, state: FSMContext, bot: Bot):
     text = message.text
     sended = blocked = 0
     await message.answer(text="🚀 Xabar yuborilmoqda...")
-    for user in await db.users_list():
+    for user in await user_db.users_list():
         is_sended = await copy_message(
             user_id=user["user_id"],
             chat_id=message.chat.id,

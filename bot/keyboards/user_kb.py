@@ -1,11 +1,9 @@
 from aiogram.filters.callback_data import CallbackData
-from aiogram.types import (
-    InlineKeyboardButton,
-    KeyboardButton,
-    ReplyKeyboardMarkup,
-    ReplyKeyboardRemove,
-)
+from aiogram.types import (InlineKeyboardButton, KeyboardButton,
+                           ReplyKeyboardMarkup, ReplyKeyboardRemove)
 from aiogram.utils.keyboard import InlineKeyboardBuilder, ReplyKeyboardBuilder
+
+from structures.database import location_db
 
 
 class UserPromoCD(CallbackData, prefix="promo"):
@@ -31,3 +29,4 @@ def language_kb():
     builder.button(text="🇷🇺 Русский", callback_data=LanguageCD(lang="ru"))
     builder.button(text="🇺🇸 English", callback_data=LanguageCD(lang="en"))
     return builder.adjust(2).as_markup()
+
