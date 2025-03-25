@@ -6,6 +6,9 @@ class Referral(Document):
     referrer_id = StringField(required=True)
     created_at = DateTimeField(default=datetime.datetime.now)
     paid = BooleanField(default=False)
+    payment_date = DateTimeField()
+    referral_user_id = StringField()
+    payment_status = StringField(default="pending")
     
     meta = {
         'collection': 'referral_payments',
