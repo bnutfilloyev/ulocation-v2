@@ -35,3 +35,8 @@ class AddPromotionState(StatesGroup):
 class AddCommentState(StatesGroup):
     waiting_for_rating = State()
     waiting_for_comment_text = State()
+
+
+class SponsorshipForm(StatesGroup):
+    social_links = State()
+    additional_info = State()

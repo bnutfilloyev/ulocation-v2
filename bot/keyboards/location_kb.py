@@ -1,9 +1,6 @@
 from aiogram.filters.callback_data import CallbackData
-from aiogram.types import (InlineKeyboardButton, KeyboardButton,
-                           ReplyKeyboardMarkup, ReplyKeyboardRemove)
-from aiogram.utils.keyboard import InlineKeyboardBuilder, ReplyKeyboardBuilder
-
-from structures.database import location_db
+from aiogram.types import InlineKeyboardButton
+from aiogram.utils.keyboard import InlineKeyboardBuilder
 
 
 class CityCD(CallbackData, prefix="city"):

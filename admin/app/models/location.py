@@ -107,11 +107,11 @@ class Location(BaseDocument):
     # Basic information
     name = EmbeddedDocumentField(MultilangText, required=True)
     description = EmbeddedDocumentField(MultilangText)
-    city = ReferenceField(City, required=True)
-    
-    # Classification
-    category = ReferenceField(Category, required=True)
-    subcategory = ReferenceField(Subcategory)
+
+    # Categorization
+    city = ReferenceField(City, required=True, reverse_delete_rule=CASCADE)    
+    category = ReferenceField(Category, required=True, reverse_delete_rule=CASCADE)
+    subcategory = ReferenceField(Subcategory, required=True ,reverse_delete_rule=CASCADE)
     tags = ListField(StringField())
     
     # Contact and details
@@ -121,7 +121,6 @@ class Location(BaseDocument):
 
     # Media
     images = ListField(EmbeddedDocumentField(Image))  # List of images with metadata
-
     
     # Geographical data
     location = EmbeddedDocumentField(GeoLocation, required=True)
@@ -138,9 +137,7 @@ class Location(BaseDocument):
     meta = {
         'collection': 'locations',
         'ordering': ['-created_at'],
-        'indexes': [
-            'city', 'category', 'subcategory', 'tags', 'is_active'
-        ]
+        'indexes': ['city', 'category', 'subcategory', 'tags', 'is_active']
     }
     
     def __str__(self):

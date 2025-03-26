@@ -32,6 +32,7 @@ class User(Document):
     created_at = DateTimeField(default=datetime.datetime.now)
     updated_at = DateTimeField(default=datetime.datetime.now)
     is_admin = BooleanField(default=False)
+    is_sponsor = BooleanField(default=False)
     
     meta = {
         'collection': 'users',

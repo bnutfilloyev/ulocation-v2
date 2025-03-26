@@ -25,23 +25,15 @@ class Config:
     BASE_PATH = "/ulocation"
 
 def initialize_db():
-    """Initialize MongoDB connection"""
-    connection_kwargs = {
-        "db": Config.MONGODB_NAME,
-        "host": Config.MONGODB_HOST,
-        "port": Config.MONGODB_PORT,
-    }
-    MONGO_URI = f"mongodb://{Config.MONGODB_HOST}:{Config.MONGODB_PORT}"
-    
-    # Add authentication if provided
-    if Config.MONGODB_USERNAME and Config.MONGODB_PASSWORD:
-        connection_kwargs["username"] = Config.MONGODB_USERNAME
-        connection_kwargs["password"] = Config.MONGODB_PASSWORD
+    if Config.DEBUG:
+        MONGO_URI = f"mongodb://localhost:27017"
+    else:
         MONGO_URI = f"mongodb://{Config.MONGODB_USERNAME}:{Config.MONGODB_PASSWORD}@{Config.MONGODB_HOST}:{Config.MONGODB_PORT}"
     
     
     try:
         connect(host=MONGO_URI, db=Config.MONGODB_NAME)
+        # connect(**connection_kwargs)
         print(f"Connected to MongoDB: {MONGO_URI}")
     except Exception as e:
         print(f"Error connecting to MongoDB: {e}")

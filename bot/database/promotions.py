@@ -49,6 +49,43 @@ class PromotionDB(MongoDB):
             {"_id": ObjectId(promotion_id)}
         )
         return promotion_info
+    
+    async def get_image_data(self, file_id: str):
+        """Get binary image data from chunks collection"""
+        cursor = self.db.promotion_images.chunks.find({"files_id": ObjectId(file_id)}).sort("n", 1)
+        
+        if not cursor:
+            return None
+        
+        data = bytearray()
+        async for chunk in cursor:
+            if chunk.get("data"):
+                # Extract binary data from the chunk
+                chunk_data = chunk.get("data")
+                if isinstance(chunk_data, dict) and "$binary" in chunk_data:
+                    # Handle MongoDB binary format
+                    import base64
+                    binary_data = base64.b64decode(chunk_data["$binary"]["base64"])
+                    data.extend(binary_data)
+                else:
+                    # Handle regular binary data
+                    data.extend(chunk_data)
+        
+        return bytes(data) if data else None
+    
+
+    async def get_promotion_image(self, image_id: str):
+        image_file = await self.db.promotion_images.files.find_one(
+            {"_id": ObjectId(image_id)}
+        )
+        if not image_file:
+            return None, None
+        
+        image_data = await self.get_image_data(image_id)
+        
+        return image_file, image_data
+        
+    
 
     async def generate_user_promo_code(self, user_id: str, promotion_id: str):
         existing_promo = await self.db.user_promo_codes.find_one(

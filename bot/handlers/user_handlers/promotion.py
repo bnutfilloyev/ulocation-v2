@@ -55,9 +55,14 @@ async def show_promotion(callback: types.CallbackQuery, callback_data: UserPromo
             f"ℹ️ Agar boshqa aksiyalarni ko‘rishni istasangiz, <b>💥 Aksiyalar</b> bo‘limiga o‘ting."
         )
 
-    if promotion["image"]:
-        await callback.message.answer_photo(photo=promotion["image"], caption=text)
-        return await callback.answer()
+
+    if promotion.get("image"):  
+        image_file, image_data = await promotion_db.get_promotion_image(promotion["image"])
+
+        if image_data and image_file:
+            input_file = types.BufferedInputFile(image_data, filename=image_file["filename"])
+            await callback.message.answer_photo(photo=input_file, caption=text)
+            return await callback.answer()
 
     await callback.message.answer(text, disable_web_page_preview=True)
     await callback.answer()

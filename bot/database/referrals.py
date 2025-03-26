@@ -48,6 +48,14 @@ class ReferralDB(MongoDB):
             new_count = referrer.get("referral_count", 0) + 1
             new_bonus = referrer.get("referral_bonus_months", 0)
             
+            if referrer.get("is_sponsor"):
+                new_count = referrer.get("referral_count", 0) + 1
+                return await self.db.users.update_one(
+                    {"user_id": referrer_id},
+                    {"$set": {"referral_count": new_count}}
+                )
+
+
             if new_count % 5 == 0:
                 new_bonus += 1
                 expiry_date = referrer.get("expiry_date")

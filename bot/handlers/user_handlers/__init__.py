@@ -5,6 +5,7 @@ from handlers.user_handlers.referral import referral_router
 from handlers.user_handlers.registration import router as register_router
 from handlers.user_handlers.subscription import invoices_router
 from handlers.user_handlers.info_handlers import router as info_router
+from handlers.user_handlers.sponsorship import router as sponsorship_router
 
 user_routers = (
     start_router,
@@ -14,4 +15,5 @@ user_routers = (
     promotions_router,
     locations_router,
     referral_router,
+    sponsorship_router
 )

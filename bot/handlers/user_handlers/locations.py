@@ -219,7 +219,7 @@ async def show_location_images(callback: types.CallbackQuery, state: FSMContext)
     image_ids = await location_db.get_location_images(location_id)
     
     if not image_ids or len(image_ids) == 0:
-        await callback.answer("Bu joy uchun afsuski rasmlar mavjud emas. Tez orada rasmlar bilan to'ldiriladi va siz bu joyni vizual ko'rishingiz mumkin bo'ladi.")
+        await callback.answer("Bu joy uchun afsuski rasmlar mavjud emas. Tez orada rasmlar bilan to'ldiriladi va siz bu joyni vizual ko'rishingiz mumkin bo'ladi.", show_alert=True)
         return
     
     # Get the current image file metadata

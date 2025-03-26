@@ -10,10 +10,6 @@ set -e
 
 echo -e "${GREEN}Starting ULocation-v2 deployment...${NC}"
 
-# Create necessary directories
-echo -e "${GREEN}Creating necessary directories...${NC}"
-mkdir -p uploads/static uploads/promotions uploads/locations
-
 # Create .env file if it doesn't exist
 if [ ! -f .env ]; then
   echo -e "${RED}No .env file found. Please create one based on .env.example${NC}"

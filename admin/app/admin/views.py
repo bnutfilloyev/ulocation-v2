@@ -10,8 +10,7 @@ admin = Admin(
 
 # Register models with admin
 from starlette_admin.contrib.mongoengine import ModelView
-from app.models.partner import Partner
-from app.models.promotion import Promotion, UserPromoCode
+from app.models.partner import Partner, Promotion, UserPromoCode
 from app.models.referral import Referral
 from app.models.user import User
 from app.models.location import City, Category, Subcategory, Location

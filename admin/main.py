@@ -11,12 +11,10 @@ from app.admin import admin
 # Ensure directories exist
 static_dir = "static"
 avatars_dir = os.path.join(static_dir, "avatars")
-uploads_dir = os.path.join(static_dir, "uploads")
 
 # Create directory structure for static files
 os.makedirs(static_dir, exist_ok=True)
 os.makedirs(avatars_dir, exist_ok=True)
-os.makedirs(uploads_dir, exist_ok=True)
 
 # Root redirect to admin
 async def homepage(request):
@@ -40,4 +38,4 @@ async def startup():
 
 # Run the app
 if __name__ == "__main__":
-    uvicorn.run("main:app", host="0.0.0.0", port=8000)
+    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
