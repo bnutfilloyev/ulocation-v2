@@ -1,15 +1,12 @@
-from aiogram import F, Router, types, Bot
+from aiogram import F, Router, types
 from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
 
 from database import partner_db, promotion_db
-from keyboards.common_kb import remove_kb, skip_kb
-from keyboards.partner_kb import (PartnerMenuCD, PartnerPromotionCD,
-                                  get_partner_promotions_kb, partner_menu_kb)
+from keyboards.common_kb import remove_kb
+from keyboards.partner_kb import PartnerMenuCD, get_partner_promotions_kb, partner_menu_kb
 from structures.states import AddPromotionState, PartnerAuthState
 
-from configuration import conf
-import os
 
 partner_router = Router()
 
@@ -100,30 +97,6 @@ async def process_promotion_description(message: types.Message, state: FSMContex
     await state.update_data(promo_description=promo_description)
 
     await message.answer(
-        "📂 <b>Aksiya uchun rasm yuklang</b>\n\n"
-        "Aksiyangizga mos keladigan suratni yuboring. "
-        "Bu chegirma, sovg‘a yoki cashback kabi takliflaringizni yanada jozibador ko‘rsatishga yordam beradi.",
-        reply_markup=skip_kb,
-    )
-    await state.set_state(AddPromotionState.waiting_for_promotion_image)
-
-
-@partner_router.message(AddPromotionState.waiting_for_promotion_image, F.photo | F.text)
-async def process_promotion_image(message: types.Message, state: FSMContext, bot: Bot):
-    """Aksiya rasmini qabul qilish"""
-    if message.text and message.text == "🚫 O'tkazib yuborish":
-        await state.update_data(photo=None)
-    elif message.text:
-        await message.answer("❌ <b>Rasm yuboring yoki tugmadan foydalaning!</b>")
-        return
-    else:
-        photo = message.photo[-1]
-        photo_path = os.path.join(conf.bot.upload_dir, "promotions", f"{photo.file_id}.jpg")
-        os.makedirs(os.path.dirname(photo_path), exist_ok=True)
-        await bot.download(file=photo, destination=photo_path)
-        await state.update_data(photo={"file_id": photo.file_id, "path": photo_path, "width": photo.width, "height": photo.height})
-
-    await message.answer(
         "📦 <b>Aksiya turini tanlang</b>\n\n"
         "🔸 <i>Misol:</i> 'Chegirma', 'Sovg‘a', 'Cashback', 'Bonus'...",
         reply_markup=remove_kb,
@@ -143,7 +116,6 @@ async def process_promotion_category(message: types.Message, state: FSMContext):
         name=data["promo_name"],
         description=data["promo_description"],
         category=data["category"],
-        image=data["photo"],
     )
 
     if not promo_id:
