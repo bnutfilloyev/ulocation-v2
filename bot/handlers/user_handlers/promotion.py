@@ -41,8 +41,8 @@ async def show_promotion(callback: types.CallbackQuery, callback_data: UserPromo
 
     if promo_code:
         text = (
-            f"🎉 <b>{promotion['name']}</b>\n\n"
-            f"📄 {promotion['description']}\n\n"
+            f"<b>{promotion['name']}</b>\n\n"
+            f"{promotion['description']}\n\n"
             f"🎟 <b>Sizning maxsus promo kodingiz:</b> <code>{promo_code}</code>\n\n"
             f"🔑 <i>⚠️ Ushbu promokod faqat 1 marta ishlatilishi mumkin!</i>\n"
             f"📅 <i>Promokodni muddati tugashidan oldin ishlating.</i>"
