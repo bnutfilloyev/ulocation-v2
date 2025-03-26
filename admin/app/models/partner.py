@@ -59,6 +59,7 @@ class UserPromoCode(Document):
     code = StringField(required=True)
     generated_at = DateTimeField(default=datetime.datetime.now)
     used = BooleanField(default=False)
+    used_at = DateTimeField()
     
     meta = {
         'collection': 'user_promo_codes',
