@@ -1,4 +1,4 @@
-from mongoengine import Document, StringField, DateTimeField, BooleanField, ReferenceField, ImageField, CASCADE
+from mongoengine import Document, StringField, DateTimeField, BooleanField, ReferenceField, ImageField, CASCADE, NULLIFY
 from app.models.user import User
 
 import datetime
@@ -55,7 +55,7 @@ class Promotion(Document):
 class UserPromoCode(Document):
     """Model for storing user promotion codes"""
     user_id = StringField(required=True)
-    promotion_id = ReferenceField(Promotion, reverse_delete_rule=CASCADE, required=True)
+    promotion_id = ReferenceField(Promotion, reverse_delete_rule=NULLIFY, required=True)
     code = StringField(required=True)
     generated_at = DateTimeField(default=datetime.datetime.now)
     used = BooleanField(default=False)
