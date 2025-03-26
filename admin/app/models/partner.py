@@ -1,8 +1,5 @@
 from mongoengine import Document, StringField, DateTimeField, BooleanField, ReferenceField, ImageField, CASCADE
 from app.models.user import User
-from PIL import Image, ImageOps
-from io import BytesIO
-
 
 import datetime
 
@@ -38,7 +35,7 @@ class Promotion(Document):
     description = StringField(required=True)
     category = StringField(required=True) 
     partner_id = ReferenceField(Partner, reverse_delete_rule=CASCADE, required=True)
-    image = ImageField(thumbnail_size=(200, 200), collection_name='promotion_images')
+    image = ImageField(size=(800, 800), thumbnail_size=(200, 200), collection_name='promotion_images')
     is_active = BooleanField(default=True)
     created_at = DateTimeField(default=datetime.datetime.now)
     
@@ -51,7 +48,7 @@ class Promotion(Document):
             'partner_id'
         ]
     }
-
+    
     def __str__(self):
         return self.name
 
