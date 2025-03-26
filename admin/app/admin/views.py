@@ -8,30 +8,19 @@ admin = Admin(
     auth_provider=MyAuthProvider(login_path="/sign-in", logout_path="/sign-out"),
 )
 
-# Register models with admin
 from starlette_admin.contrib.mongoengine import ModelView
-from starlette_admin.fields import TextAreaField
 
 from app.models.partner import Partner, Promotion, UserPromoCode
 from app.models.referral import Referral
 from app.models.user import User
 from app.models.location import City, Category, Subcategory, Location
 
-class PromotionAdmin(ModelView):
-    fields = [
-        "name",
-        TextAreaField("description"),
-        "category",
-        "image",
-        "is_active",
-        "created_at"
-    ]
 
 
 def register_admin_views(admin):
     """Register all model views with the admin instance"""
     admin.add_view(ModelView(Partner, name="Partners", icon="fa fa-user-tie", label="Partners"))
-    admin.add_view(PromotionAdmin(Promotion, name="Promotions", icon="fa fa-gift", label="Promotions"))
+    admin.add_view(ModelView(Promotion, name="Promotions", icon="fa fa-gift", label="Promotions"))
     admin.add_view(ModelView(UserPromoCode, name="User Promo Codes", icon="fa fa-ticket-alt", label="User Promo Codes"))
     admin.add_view(ModelView(Referral, name="Referrals", icon="fa fa-users", label="Referrals"))
     admin.add_view(ModelView(User, name="Users", icon="fa fa-user", label="Users"))
