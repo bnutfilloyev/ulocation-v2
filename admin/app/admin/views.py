@@ -22,7 +22,6 @@ class PromotionAdmin(ModelView):
         "name",
         TextAreaField("description"),
         "category",
-        "partner_id",
         "image",
         "is_active",
         "created_at"
