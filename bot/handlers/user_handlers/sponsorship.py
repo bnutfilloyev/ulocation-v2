@@ -8,7 +8,7 @@ from structures.states import SponsorshipForm
 router = Router()
 
 
-ADMIN_GROUP_ID = -4752001386
+ADMIN_GROUP_ID = -1002585845250
 
 @router.message(F.text == "🤝 Hamkor bo'lish")
 async def sponsorship(message: types.Message, state: FSMContext):
