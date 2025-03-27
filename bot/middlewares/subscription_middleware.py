@@ -3,7 +3,6 @@ from typing import Any, Awaitable, Callable, Dict
 from aiogram import BaseMiddleware
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message
-
 from structures.states import RegState
 from utils.user_check import \
     check_user_stepwise  # Yangi funksiyani import qilish

@@ -10,7 +10,6 @@ from aiogram.fsm.storage.base import BaseEventIsolation, BaseStorage
 from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.fsm.strategy import FSMStrategy
 from aiogram.utils.i18n import I18n
-
 from configuration import conf
 from handlers import routers
 from middlewares.i18n_middleware import LanguageMiddleware

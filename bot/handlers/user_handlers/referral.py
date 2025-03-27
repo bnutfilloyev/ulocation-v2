@@ -1,7 +1,6 @@
 from aiogram import Bot, F, Router, types
 from aiogram.utils.deep_linking import create_start_link
 from database import user_db
-
 from keyboards.common_kb import main_menu_kb
 
 referral_router = Router()

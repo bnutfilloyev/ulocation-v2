@@ -1,5 +1,4 @@
 from aiogram import Bot, types
-
 from configuration import conf
 from structures.broadcaster import send_message
 

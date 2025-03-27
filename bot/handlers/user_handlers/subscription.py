@@ -3,9 +3,8 @@ from datetime import datetime, timedelta
 from aiogram import Bot, F, Router, types
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, PreCheckoutQuery
-from dateutil.relativedelta import relativedelta
-
 from database import referral_db, user_db
+from dateutil.relativedelta import relativedelta
 from keyboards.common_kb import main_menu_kb
 from structures.states import RegState
 

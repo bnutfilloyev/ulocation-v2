@@ -1,4 +1,5 @@
-from starlette.authentication import AuthCredentials, AuthenticationBackend, BaseUser
+from starlette.authentication import (AuthCredentials, AuthenticationBackend,
+                                      BaseUser)
 
 
 class AdminUser(BaseUser):

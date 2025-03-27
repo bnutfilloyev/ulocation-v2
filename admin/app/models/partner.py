@@ -1,17 +1,8 @@
 import datetime
 
-from mongoengine import (
-    CASCADE,
-    NULLIFY,
-    BooleanField,
-    DateTimeField,
-    Document,
-    ImageField,
-    ReferenceField,
-    StringField,
-)
+from mongoengine import (CASCADE, NULLIFY, BooleanField, DateTimeField,
+                         Document, ImageField, ReferenceField, StringField)
 from starlette.requests import Request
-
 
 
 class Partner(Document):

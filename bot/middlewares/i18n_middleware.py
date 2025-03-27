@@ -5,7 +5,6 @@ from aiogram import types
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, TelegramObject
 from aiogram.utils.i18n.middleware import FSMI18nMiddleware
-
 from database import user_db
 
 logger = logging.getLogger(__name__)

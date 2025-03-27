@@ -1,13 +1,12 @@
 import os
 
 import uvicorn
-from starlette.responses import RedirectResponse
-from starlette.routing import Route
-
 # Import app instance
 from app import app
 from app.admin import admin
 from config import initialize_db
+from starlette.responses import RedirectResponse
+from starlette.routing import Route
 
 # Ensure directories exist
 static_dir = "static"

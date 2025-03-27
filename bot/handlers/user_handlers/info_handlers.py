@@ -1,4 +1,4 @@
-from aiogram import Router, types, F
+from aiogram import F, Router, types
 
 router = Router()
 

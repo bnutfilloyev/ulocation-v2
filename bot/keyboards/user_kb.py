@@ -2,7 +2,6 @@ from aiogram.filters.callback_data import CallbackData
 from aiogram.utils.keyboard import InlineKeyboardBuilder, ReplyKeyboardBuilder
 
 
-
 class UserPromoCD(CallbackData, prefix="promo"):
     promo_id: str
 

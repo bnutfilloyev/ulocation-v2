@@ -1,10 +1,9 @@
+import re
 from datetime import datetime
 
 from aiogram import F, Router, types
-
 from database import promotion_db
 from keyboards.user_kb import UserPromoCD, promotions_kb
-import re
 
 promotions_router = Router()
 

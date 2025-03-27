@@ -1,10 +1,9 @@
+from config import Config
 from starlette.applications import Starlette
 from starlette.middleware import Middleware
 from starlette.middleware.sessions import SessionMiddleware
 from starlette.staticfiles import StaticFiles
 from starlette.templating import Jinja2Templates
-
-from config import Config
 
 # Create Starlette application with middleware
 middleware = [Middleware(SessionMiddleware, secret_key=Config.SECRET_KEY)]

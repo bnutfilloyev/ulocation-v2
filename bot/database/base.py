@@ -1,8 +1,7 @@
 from urllib.parse import quote_plus
 
-from motor import motor_asyncio
-
 from configuration import conf
+from motor import motor_asyncio
 
 
 class MongoDB:

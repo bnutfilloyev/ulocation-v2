@@ -1,20 +1,10 @@
 import datetime
 
 from jinja2 import Template
-from mongoengine import (
-    CASCADE,
-    BooleanField,
-    DateTimeField,
-    Document,
-    EmbeddedDocument,
-    EmbeddedDocumentField,
-    FloatField,
-    ImageField,
-    IntField,
-    ListField,
-    ReferenceField,
-    StringField,
-)
+from mongoengine import (CASCADE, BooleanField, DateTimeField, Document,
+                         EmbeddedDocument, EmbeddedDocumentField, FloatField,
+                         ImageField, IntField, ListField, ReferenceField,
+                         StringField)
 from starlette.requests import Request
 
 

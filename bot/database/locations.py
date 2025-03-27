@@ -1,5 +1,6 @@
-from .base import MongoDB
 from bson import ObjectId
+
+from .base import MongoDB
 
 
 class LocationDB(MongoDB):
@@ -78,7 +79,7 @@ class LocationDB(MongoDB):
     async def add_comment(self, location_id: str, user_id: int, user_name: str, rating: int, comment_text: str):
         """Add a new comment to a location's comments array"""
         from datetime import datetime
-        
+
         # Create comment document
         comment = {
             "user_id": str(user_id),

@@ -1,15 +1,8 @@
 import datetime
 
-from mongoengine import (
-    BooleanField,
-    DateTimeField,
-    Document,
-    EmbeddedDocument,
-    EmbeddedDocumentField,
-    FloatField,
-    ListField,
-    StringField,
-)
+from mongoengine import (BooleanField, DateTimeField, Document,
+                         EmbeddedDocument, EmbeddedDocumentField, FloatField,
+                         ListField, StringField)
 
 
 class Payment(EmbeddedDocument):

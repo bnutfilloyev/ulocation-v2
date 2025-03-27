@@ -1,18 +1,15 @@
-from aiogram import types, Bot
-from aiogram.fsm.context import FSMContext
-from aiogram.filters import CommandObject
-from aiogram.utils.deep_linking import decode_payload
 from datetime import datetime
 
-
+from aiogram import Bot, types
+from aiogram.filters import CommandObject
+from aiogram.fsm.context import FSMContext
+from aiogram.types import FSInputFile
+from aiogram.utils.deep_linking import decode_payload
 from configuration import conf
-from database import user_db, referral_db
-from keyboards.common_kb import agreement_kb, contact_kb, remove_kb
+from database import referral_db, user_db
+from keyboards.common_kb import agreement_kb, contact_kb, link_kb, remove_kb
 from keyboards.user_kb import language_kb
 from structures.states import RegState
-from keyboards.common_kb import link_kb
-from aiogram.types import FSInputFile
-
 
 
 async def check_user_referral(message: types.Message, command: CommandObject, bot: Bot) -> bool:

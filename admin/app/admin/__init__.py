@@ -1,7 +1,6 @@
-from starlette_admin.contrib.mongoengine import Admin
-
 from app.utils.auth import MyAuthProvider
 from config import Config
+from starlette_admin.contrib.mongoengine import Admin
 
 # Create a single admin instance to use throughout the application
 admin = Admin(

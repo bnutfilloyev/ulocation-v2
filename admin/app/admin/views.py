@@ -1,12 +1,11 @@
 from typing import Any, Dict
 
+from app.utils.auth import MyAuthProvider
 from starlette.datastructures import FormData
 from starlette.requests import Request
 from starlette.responses import Response
 from starlette_admin.contrib.mongoengine import Admin
 from starlette_admin.exceptions import FormValidationError
-
-from app.utils.auth import MyAuthProvider
 
 admin = Admin(
     title="ULocation Admin",
@@ -15,14 +14,13 @@ admin = Admin(
     auth_provider=MyAuthProvider(login_path="/sign-in", logout_path="/sign-out"),
 )
 
-from markupsafe import Markup
-from starlette_admin import RequestAction, TagsField, TextAreaField
-from starlette_admin.contrib.mongoengine import ModelView
-
 from app.models.location import Category, City, Location, Subcategory
 from app.models.partner import Partner, Promotion, UserPromoCode
 from app.models.referral import Referral
 from app.models.user import User
+from markupsafe import Markup
+from starlette_admin import RequestAction, TagsField, TextAreaField
+from starlette_admin.contrib.mongoengine import ModelView
 
 
 class HTMLField(TextAreaField):

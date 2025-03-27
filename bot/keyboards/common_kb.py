@@ -2,7 +2,6 @@ from aiogram.types import (KeyboardButton, ReplyKeyboardMarkup,
                            ReplyKeyboardRemove)
 from aiogram.utils.keyboard import InlineKeyboardBuilder, ReplyKeyboardBuilder
 
-
 remove_kb = ReplyKeyboardRemove()
 
 

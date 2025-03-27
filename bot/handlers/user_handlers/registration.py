@@ -1,15 +1,12 @@
 from aiogram import F, Router, types
 from aiogram.fsm.context import FSMContext
-
+from aiogram.types import FSInputFile
 from configuration import conf
 from database import user_db
-from keyboards.common_kb import agreement_kb, contact_kb, main_menu_kb
+from keyboards.common_kb import agreement_kb, contact_kb, link_kb, main_menu_kb
 from keyboards.user_kb import LanguageCD
 from structures.states import RegState
 from utils.user_check import check_user_stepwise
-from keyboards.common_kb import link_kb
-from aiogram.types import FSInputFile
-
 
 router = Router()
 

@@ -1,12 +1,11 @@
 from aiogram import F, Router, types
 from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
-
 from database import partner_db, promotion_db
 from keyboards.common_kb import remove_kb
-from keyboards.partner_kb import PartnerMenuCD, get_partner_promotions_kb, partner_menu_kb
+from keyboards.partner_kb import (PartnerMenuCD, get_partner_promotions_kb,
+                                  partner_menu_kb)
 from structures.states import AddPromotionState, PartnerAuthState
-
 
 partner_router = Router()
 

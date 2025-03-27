@@ -1,10 +1,9 @@
 from aiogram import F, Router, types
-from aiogram.fsm.context import FSMContext
-from keyboards.common_kb import skip_kb, main_menu_kb
-from structures.states import SponsorshipForm
-from database import user_db
 from aiogram.filters import Command, CommandObject
-
+from aiogram.fsm.context import FSMContext
+from database import user_db
+from keyboards.common_kb import main_menu_kb, skip_kb
+from structures.states import SponsorshipForm
 
 router = Router()
 

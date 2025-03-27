@@ -1,17 +1,18 @@
-from aiogram import F, Router, types
-from aiogram.utils.keyboard import InlineKeyboardBuilder
-from aiogram.fsm.context import FSMContext
-from aiogram.fsm.state import State
-from aiogram.exceptions import TelegramBadRequest
-
-from keyboards.location_kb import CityCD, CategoryCD, SubcategoryCD, LocationCD, CommentsCD
-from keyboards.location_kb import cities_kb, categories_kb, subcategories_kb, locations_kb, image_navigation_kb
-from keyboards.comment_kb import rating_kb, comment_action_kb
-from structures.states import AddCommentState
-from database import location_db, user_db
 import io
 import re
 
+from aiogram import F, Router, types
+from aiogram.exceptions import TelegramBadRequest
+from aiogram.fsm.context import FSMContext
+from aiogram.fsm.state import State
+from aiogram.utils.keyboard import InlineKeyboardBuilder
+from database import location_db, user_db
+from keyboards.comment_kb import comment_action_kb, rating_kb
+from keyboards.location_kb import (CategoryCD, CityCD, CommentsCD, LocationCD,
+                                   SubcategoryCD, categories_kb, cities_kb,
+                                   image_navigation_kb, locations_kb,
+                                   subcategories_kb)
+from structures.states import AddCommentState
 
 router = Router()
 
@@ -28,7 +29,7 @@ async def show_cities(message: types.Message, state: FSMContext):
     await state.update_data(locale=language)
 
     btn = await cities_kb(cities, language)
-    await message.answer("🏙️ Qaysi shahardagi qiziqarli joylar va mashhur manzillarni ko'rishni xohlaysiz? Quyidagi ro'yxatdan shaharni tanlang:", reply_markup=btn)
+    await message.answer("🏙️ <b>Qaysi shahardagi</b> <i>sirli go'zalliklar</i>, <u>unutilmas joylar</u> va mashhur maskanlar sizni qiziqtiradi? Quyidagi ro'yxatdan birini tanlang va sayohatga chiqing!", reply_markup=btn)
 
 
 @router.callback_query(F.data == "back_to_cities")
@@ -53,7 +54,7 @@ async def on_city_selected(callback: types.CallbackQuery, callback_data: CityCD,
 
     update_date = await state.get_data()
     btn = await categories_kb(categories, update_date.get('locale'))
-    await callback.message.edit_text("📋 Qanday turdagi joylarni ko'rishni xohlaysiz? Qiziqishingizga mos kategoriyani tanlang:", reply_markup=btn)
+    await callback.message.edit_text("📋 Sizni <i>nimalar ko'proq qiziqtiradi</i>? <b>Madaniyatmi</b>, <b>tabiatmi</b> yoki <b>hordiq joylari</b>mi? O'zingizga mos kategoriyani tanlang!", reply_markup=btn)
     await callback.answer()
 
 
@@ -71,7 +72,7 @@ async def on_category_selected(callback: types.CallbackQuery, callback_data: Cat
 
     update_date = await state.get_data()
     btn = await subcategories_kb(subcategories, update_date.get('locale'))
-    await callback.message.edit_text("🔍 Kategoriya ichidagi aniq yo'nalishni tanlang. Bu sizga ko'proq mos keluvchi joylarni topishga yordam beradi:", reply_markup=btn)
+    await callback.message.edit_text("🔍 Qiziqishlaringizga eng mos bo'lgan <b>yo'nalishni tanlang</b> va <i>o'zingizni kashfiyotchi</i> kabi his qiling!", reply_markup=btn)
     await callback.answer()
 
 
@@ -91,12 +92,12 @@ async def on_subcategory_selected(callback: types.CallbackQuery, callback_data: 
     )
     
     if not locations:
-        await callback.answer("📌 Bu subkategoriyada hozircha lokatsiyalar mavjud emas. Tez orada yangi va qiziqarli joylar ro'yxati bilan to'ldiriladi. Iltimos, boshqa subkategoriyani tanlang yoki keyinroq qayta tashrif buyuring!")
+        await callback.answer("📌 Bu subkategoriyada hozircha joylar yo'q. Boshqasini tanlang yoki keyinroq keling.")
         return
 
     btn = await locations_kb(locations, locale)
     
-    await callback.message.edit_text("📌 Quyidagi ro'yxatdan o'zingizga qiziq bo'lgan joyni tanlang. Har bir joy haqida batafsil ma'lumot, rasm va izohlarni ko'rishingiz mumkin:", reply_markup=btn)
+    await callback.message.edit_text("📌 Qiziq joylardan birini tanlang va uni <b>yaqindan kashf eting!</b> Har bir manzil haqida <i>batafsil ma'lumot</i>, <u>go'zal suratlar</u> va <b>tashrif buyurganlar fikrlari</b> sizni kutmoqda.", reply_markup=btn)
     await callback.answer()
 
 
@@ -551,7 +552,7 @@ async def on_comments(callback: types.CallbackQuery, callback_data: CommentsCD, 
             text += f"{rating_stars} {rating}/5\n"
             text += f"{comment_text}\n\n"
     else:
-        text = f"📢 <b>{location_name}</b> haqida hali izohlar qoldirilmagan. Ushbu joyga tashrif buyurgan bo'lsangiz, birinchi bo'lib o'z fikringiz va taassurotlaringizni qoldiring!"
+        text = f"📢 <b>{location_name}</b> haqida hozircha hech qanday izoh yo'q. Agar bu yerda bo'lgan bo'lsangiz, <i>o'z taassurotlaringiz bilan boshqalarga ilhom bering!</i>"
     
     # Create buttons
     builder = InlineKeyboardBuilder()

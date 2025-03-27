@@ -2,10 +2,9 @@ from aiogram import Bot, Router, types
 from aiogram.filters import Command, CommandObject
 from aiogram.fsm.context import FSMContext
 from aiogram.utils.i18n import gettext as _
-
 from database import user_db
 from keyboards.common_kb import main_menu_kb, remove_kb
-from utils.user_check import check_user_stepwise, check_user_referral
+from utils.user_check import check_user_referral, check_user_stepwise
 
 start_router = Router()
 
