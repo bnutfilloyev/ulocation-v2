@@ -4,6 +4,7 @@ from aiogram import F, Router, types
 
 from database import promotion_db
 from keyboards.user_kb import UserPromoCD, promotions_kb
+import re
 
 promotions_router = Router()
 
@@ -38,11 +39,14 @@ async def show_promotion(callback: types.CallbackQuery, callback_data: UserPromo
 
     user_id = str(callback.from_user.id)
     promo_code = await promotion_db.generate_user_promo_code(user_id, promo_id)
+    description_raw = promotion["description"]
+    description = re.sub(r"<br\s*/?>", "\n", description_raw)
+
 
     if promo_code:
         text = (
             f"<b>{promotion['name']}</b>\n\n"
-            f"{promotion['description']}\n\n"
+            f"{description}\n\n"
             f"🎟 <b>Sizning maxsus promo kodingiz:</b> <code>{promo_code}</code>\n\n"
             f"🔑 <i>⚠️ Ushbu promokod faqat 1 marta ishlatilishi mumkin!</i>\n"
             f"📅 <i>Promokodni muddati tugashidan oldin ishlating.</i>"
@@ -50,7 +54,7 @@ async def show_promotion(callback: types.CallbackQuery, callback_data: UserPromo
     else:
         text = (
             f"🎉 <b>{promotion['name']}</b>\n\n"
-            f"📄 {promotion['description']}\n\n"
+            f"📄 {description}\n\n"
             f"✅ <b>Siz ushbu aksiya bo‘yicha promokoddan allaqachon foydalangansiz.</b>\n\n"
             f"ℹ️ Agar boshqa aksiyalarni ko‘rishni istasangiz, <b>💥 Aksiyalar</b> bo‘limiga o‘ting."
         )

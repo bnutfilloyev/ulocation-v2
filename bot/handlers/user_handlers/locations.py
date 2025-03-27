@@ -10,6 +10,8 @@ from keyboards.comment_kb import rating_kb, comment_action_kb
 from structures.states import AddCommentState
 from database import location_db, user_db
 import io
+import re
+
 
 router = Router()
 
@@ -118,8 +120,10 @@ async def on_location_selected(callback: types.CallbackQuery, callback_data: Loc
     location_name = loc.get('name', {}).get(locale, loc.get('name', {}).get('uz', "Noma'lum"))
     
     # Get description if available
-    description = loc.get('description', {}).get(locale, loc.get('description', {}).get('uz', ""))
-    
+    description_raw = loc.get('description', {}).get(locale, loc.get('description', {}).get('uz', ""))
+    # description = description_raw.replace("<br>", "\n").replace("<br/>", "\n").replace("<br />", "\n")    
+    description = re.sub(r"<br\s*/?>", "\n", description_raw)
+
     # Format tags if available
     tags = loc.get('tags', [])
     tags_text = ""
@@ -195,12 +199,11 @@ async def on_location_selected(callback: types.CallbackQuery, callback_data: Loc
     # Back button
     builder.button(
         text="⬅️ Orqaga",
-        callback_data="back_to_locations"
+        callback_data="back_to_cities"
     )
     
-    builder.adjust(1)  # 1 button per row
+    builder.adjust(1)
     
-    # Send message with inline keyboard
     try:
         await callback.message.edit_text(details, parse_mode="HTML", reply_markup=builder.as_markup())
     except TelegramBadRequest:
@@ -255,16 +258,13 @@ async def show_location_images(callback: types.CallbackQuery, state: FSMContext)
     if width and height:
         caption += f"📐 {width}x{height}\n"
     
-    # Create navigation keyboard
     markup = await image_navigation_kb(location_id, current_index, len(image_ids))
     
-    # Create InputFile from bytes
     input_file = types.BufferedInputFile(
         file=image_data,
         filename=filename or f"image_{current_index}.jpg"
     )
     
-    # Send the photo
     await callback.message.answer_photo(
         photo=input_file,
         caption=caption,
@@ -272,7 +272,6 @@ async def show_location_images(callback: types.CallbackQuery, state: FSMContext)
         reply_markup=markup
     )
     
-    # Delete the original message to avoid clutter
     await callback.message.delete()
     await callback.answer()
 

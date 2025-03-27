@@ -1,8 +1,10 @@
 from typing import Optional
+
 from starlette.requests import Request
 from starlette.responses import Response
 from starlette_admin.auth import AdminUser, AuthProvider
 from starlette_admin.exceptions import FormValidationError, LoginFailed
+
 from config import Config
 
 # Simplified user definition
@@ -13,6 +15,7 @@ users = {
         "roles": ["admin"],
     }
 }
+
 
 class MyAuthProvider(AuthProvider):
     async def login(

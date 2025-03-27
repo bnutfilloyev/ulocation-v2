@@ -1,3 +1,3 @@
-from .user import User, Payment
+from .location import Category, City, Location, MultilangText, Subcategory
 from .partner import Partner, Promotion, UserPromoCode
-from .location import City, Category, Subcategory, Location, MultilangText
+from .user import Payment, User
