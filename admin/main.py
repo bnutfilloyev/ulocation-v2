@@ -22,7 +22,7 @@ async def homepage(request):
 
 # Define core routes
 routes = [
-    Route("/"),
+    Route("/", endpoint=homepage),
 ]
 
 # Mount routes
