@@ -12,8 +12,6 @@ services:
       - DEBUG=False
     networks:
       - ulocation-network
-    volumes:
-      - ./uploads:/app/uploads
 
   admin:
     build:
@@ -26,8 +24,6 @@ services:
       - .env
     environment:
       - UPLOAD_DIR=/app/uploads
-    volumes:
-      - ./uploads:/app/uploads
     networks:
       - ulocation-network
     depends_on:

@@ -15,9 +15,7 @@ templates = Jinja2Templates(directory="templates")
 from app.admin.admin_views import exception_handlers
 
 # Create the app instance
-app = Starlette(
-    debug=Config.DEBUG, middleware=middleware, exception_handlers=exception_handlers
-)
+app = Starlette(debug=Config.DEBUG, middleware=middleware, exception_handlers=exception_handlers)
 
 # Mount static files
 app.mount("/static", StaticFiles(directory="static"), name="static")

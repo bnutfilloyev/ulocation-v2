@@ -5,7 +5,7 @@ from starlette_admin.contrib.mongoengine import Admin
 # Create a single admin instance to use throughout the application
 admin = Admin(
     title="ULocation Admin",
-    base_url=f"{Config.BASE_PATH}/admin",
+    base_url="/admin",  # Changed from f"{Config.BASE_PATH}/admin"
     route_name="admin",
     auth_provider=MyAuthProvider(login_path="/sign-in", logout_path="/sign-out"),
 )
