@@ -18,7 +18,7 @@ from app.admin.admin_views import exception_handlers
 app = Starlette(debug=Config.DEBUG, middleware=middleware, exception_handlers=exception_handlers)
 
 # Mount static files
-app.mount("/static", StaticFiles(directory="admin/static"), name="static")
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
 # Import and initialize admin
 from app.admin import admin, init_admin
