@@ -9,7 +9,7 @@ from starlette.responses import RedirectResponse
 from starlette.routing import Route
 
 # Ensure directories exist
-static_dir = "static"  # Create in the current directory
+static_dir = "admin/static"  # Create in the current directory
 
 # Create directory structure for static files
 os.makedirs(static_dir, exist_ok=True)

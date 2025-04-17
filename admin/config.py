@@ -24,9 +24,6 @@ class Config:
     ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD", "admin")
     SECRET_KEY = os.getenv("SECRET_KEY", "your-secret-key-here")
 
-    # Base path for admin routes
-    BASE_PATH = "/ulocation"
-
 
 def initialize_db():
     if Config.DEBUG:
