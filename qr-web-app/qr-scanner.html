@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Scanner</title>
+    <script src="https://unpkg.com/html5-qrcode/minified/html5-qrcode.min.js"></script>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+        #reader {
+            width: 100%;
+            max-width: 400px;
+            margin: 20px auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Scan QR Code</h1>
+    <div id="reader"></div>
+    <script>
+        const telegram = window.Telegram.WebApp;
+        telegram.expand();
+
+        function onScanSuccess(decodedText) {
+            telegram.sendData(decodedText);
+        }
+
+        function onScanFailure(error) {
+            console.warn(`QR scan failed: ${error}`);
+        }
+
+        const html5QrCode = new Html5Qrcode("reader");
+        html5QrCode.start(
+            { facingMode: "environment" },
+            { fps: 10, qrbox: 250 },
+            onScanSuccess,
+            onScanFailure
+        ).catch(err => console.error(`Unable to start QR scanner: ${err}`));
+    </script>
+</body>
+</html>

@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime
 
 from aiogram import Bot, F, Router, types
 from aiogram.fsm.context import FSMContext
@@ -9,6 +9,14 @@ from keyboards.common_kb import main_menu_kb
 from structures.states import RegState
 
 invoices_router = Router()
+
+
+@invoices_router.message(RegState.subscription, F.text == "Obuna olish")
+async def subscription_handler(message: types.Message, state: FSMContext):
+    pass
+
+    
+
 
 
 @invoices_router.pre_checkout_query(RegState.subscription, F.invoice_payload == "subscription")

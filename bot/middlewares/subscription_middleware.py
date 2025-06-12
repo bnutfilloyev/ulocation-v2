@@ -3,9 +3,8 @@ from typing import Any, Awaitable, Callable, Dict
 from aiogram import BaseMiddleware
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message
-from structures.states import RegState
-from utils.user_check import \
-    check_user_stepwise  # Yangi funksiyani import qilish
+from structures.states import RegState, PaymentState
+from utils.user_check import check_user_stepwise 
 
 
 class SubscriptionMiddleware(BaseMiddleware):
@@ -24,7 +23,10 @@ class SubscriptionMiddleware(BaseMiddleware):
         bypass_states = [
             RegState.fullname, 
             RegState.phone_number, 
-            RegState.subscription
+            RegState.subscription,
+            PaymentState.waiting_for_card_number,
+            PaymentState.waiting_for_card_expiration,
+            PaymentState.waiting_for_sms_code,
         ]
         if state_name in bypass_states:
             return await handler(event, data)

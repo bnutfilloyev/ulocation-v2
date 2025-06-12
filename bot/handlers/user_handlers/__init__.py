@@ -6,14 +6,16 @@ from handlers.user_handlers.referral import referral_router
 from handlers.user_handlers.registration import router as register_router
 from handlers.user_handlers.sponsorship import router as sponsorship_router
 from handlers.user_handlers.subscription import invoices_router
+from handlers.user_handlers.payment import router as payment_router
 
 user_routers = (
     start_router,
     info_router,
     register_router,
     invoices_router,
+    payment_router,
     promotions_router,
     locations_router,
     referral_router,
-    sponsorship_router
+    sponsorship_router,
 )

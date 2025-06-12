@@ -4,8 +4,13 @@ from aiogram.filters.state import State, StatesGroup
 class RegState(StatesGroup):
     fullname = State()
     phone_number = State()
-    agreement = State()  # Yangi holat qo'shing
+    agreement = State()
     subscription = State()
+
+class PaymentState(StatesGroup):
+    waiting_for_card_number = State()
+    waiting_for_card_expiration = State()
+    waiting_for_sms_code = State()
 
 
 class BroadcastState(StatesGroup):
@@ -31,7 +36,6 @@ class AddPromotionState(StatesGroup):
     waiting_for_promotion_category = State()
 
 
-# New states for adding comments to locations
 class AddCommentState(StatesGroup):
     waiting_for_rating = State()
     waiting_for_comment_text = State()

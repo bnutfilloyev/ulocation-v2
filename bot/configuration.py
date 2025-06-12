@@ -29,11 +29,19 @@ class MongoDBConfig:
 
 
 @dataclass
+class ClickPaymentsConfig:
+    merchant_id: str = env.str("CLICK_MERCHANT_ID")
+    secret_key: str = env.str("CLICK_SECRET_KEY")
+    service_id: str = env.str("CLICK_SERVICE_ID")
+    merchant_user_id: str = env.str("CLICK_MERCHANT_USER_ID")
+
+@dataclass
 class Configuration:
     """All in one configuration's class."""
 
     bot = BotConfig()
     db = MongoDBConfig()
+    payment = ClickPaymentsConfig()
 
 
 conf = Configuration()
