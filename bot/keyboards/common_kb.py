@@ -25,7 +25,7 @@ contact_kb = ReplyKeyboardMarkup(
 main_menu_kb = ReplyKeyboardMarkup(
     keyboard=[
         [
-            KeyboardButton(text="💥 Aksiyalar"),
+            KeyboardButton(text="💲 1DOLLARSCLUB"),
             KeyboardButton(text="📍 Lokatsiyalar"),
         ],
         [

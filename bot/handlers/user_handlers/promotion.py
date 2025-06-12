@@ -1,11 +1,45 @@
 import re
-from datetime import datetime
-
 from aiogram import F, Router, types
+from aiogram.fsm.context import FSMContext
 from database import promotion_db
 from keyboards.user_kb import UserPromoCD, promotions_kb
+from utils.user_check import check_user_premium_access
+
 
 promotions_router = Router()
+
+
+@promotions_router.message(F.text == "💲 1DOLLARSCLUB")
+async def premium_club_handler(message: types.Message, state: FSMContext):
+    """Handle Premium Club button - check subscription and show promotions"""
+    if not await check_user_premium_access(message, state):
+        return
+    
+    # If user has premium access, show promotions
+    await list_promotions(message)
+
+
+async def list_promotions(message: types.Message):
+    """Show available promotions to premium users"""
+    promotions = await promotion_db.get_active_promotions()
+
+    if not promotions:
+        return await message.answer(
+            "💲 <b>1DOLLARSCLUB</b>\n\n"
+            "⚠️ <b>Hozirda faol aksiyalar mavjud emas.</b>\n\n"
+            "🕐 Yangi premium aksiyalar tez orada qo'shiladi. Kuzatib boring! 😉\n\n"
+            "💎 <i>Siz 1DOLLARSCLUB a'zosisiz va yangi aksiyalar paydo bo'lishi bilan avtomatik xabar olasiz!</i>",
+        )
+
+    btn = await promotions_kb(promotions)
+    text = (
+        "💲 <b>1DOLLARSCLUB</b>\n\n"
+        "🔥 <b>Siz uchun eksklyuziv aksiyalar:</b>\n\n"
+        "📌 Istalgan aksiyani tanlang va maxsus promokodingizni oling!\n"
+        "💰 Bu aksiyalar faqat 1DOLLARSCLUB a'zolari uchun mavjud!"
+    )
+    await message.answer(text, reply_markup=btn)
+
 
 
 @promotions_router.message(F.text == "💥 Aksiyalar")

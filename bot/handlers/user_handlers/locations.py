@@ -76,7 +76,6 @@ async def on_category_selected(callback: types.CallbackQuery, callback_data: Cat
     await callback.answer()
 
 
-# 4. Subkategoriya tanlanganda, shu subkategoriyaga tegishli lokatsiyalarni ko'rsatish
 @router.callback_query(SubcategoryCD.filter())
 async def on_subcategory_selected(callback: types.CallbackQuery, callback_data: SubcategoryCD, state: FSMContext):
     update_date = await state.get_data()
